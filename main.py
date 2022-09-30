@@ -1,4 +1,4 @@
-from utilities.logger import get_script_logger
+from logger import get_script_logger
 import pandas as pd
 import numpy as np
 
