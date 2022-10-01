@@ -4,9 +4,9 @@ building_types = ['монолитный', 'кирпичный', 'панельн�
 test_cases: dict[str, dict[str, tuple[Any, Literal['equal', 'in']]]] = {
     'https://krisha.kz//a/show/674680782': {
         'mortgaged': (False, 'equal'),
-        'building_type': (building_types, 'in'),
+        'building_type': ('монолитный', 'equal'),
         'build_year': (2013, 'equal'),
-        'floor': (2, 'equal'),
+        'floor': (4, 'equal'),
         'max_floor': (4, 'max_floor'),
         'general_area': (45, 'equal'),
         'kitchen_area': (6, 'equal'),

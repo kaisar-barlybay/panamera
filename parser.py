@@ -100,10 +100,13 @@ class Parser:
       logger.debug(url)
       soup = self.get_soup(url)
       a_tags = soup.select('div.a-card__header > div.a-card__main-info > div.a-card__header-left > a')
+      price_selector = 'div.a-card__main-info > div.a-card__price'
+      price = ...
 
       for a_tag in a_tags:
         uri = f"https://krisha.kz/{a_tag['href']}"
-        yield uri
+        title = a_tag.getText()
+        yield uri, title, price
 
   def get_soup(self, url: str) -> BeautifulSoup:
     time.sleep(0.5)
@@ -384,7 +387,6 @@ class Parser:
         'furniture': None,
         'floor_type': None,
         'ceiling_height': None,
-
         'bars_on_the_window': None,
         'security': None,
         'entry_phone': None,
