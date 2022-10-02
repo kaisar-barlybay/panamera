@@ -94,27 +94,27 @@ class Parser:
     #   self.webdriver = Webdriver('tordriver', chrome_driver_path, firefox_binary_path, firefox_profile_path, geckodriver_path, True)
     self.dtypes = dtypes
 
-  def crawl(self, from_page: int, to_page: int) -> Generator[str, None, None]:
+  def crawl(self, from_page: int, to_page: int) -> Generator[tuple[str, str, int], None, None]:
     for i in range(from_page, to_page + 1):
       url = f'https://krisha.kz/prodazha/kvartiry/almaty/?page={i}'
-      logger.debug(url)
       soup = self.get_soup(url)
-      a_tags = soup.select('div.a-card__header > div.a-card__main-info > div.a-card__header-left > a')
-      price_selector = 'div.a-card__main-info > div.a-card__price'
-      price = ...
+      main_info_selector = 'div.a-card__main-info'
+      main_infos = soup.select(main_info_selector)
+      a_selector = 'div.a-card__header-left > a'
+      price_selector = 'div.a-card__price'
 
-      for a_tag in a_tags:
-        uri = f"https://krisha.kz/{a_tag['href']}"
-        title = a_tag.getText()
-        yield uri, title, price
+      for main_info in main_infos:
+        a_tag = main_info.select_one(a_selector)
+        price_div = main_info.select_one(price_selector)
+        if a_tag is not None and price_div is not None:
+          price = price_div.getText().replace(r'от', '').replace(r'〒', '').replace(u'\xa0', '').strip()
+          uri = f"https://krisha.kz/{a_tag['href']}"
+          title = a_tag.getText().strip()
+          yield uri, title, int(price)
 
   def get_soup(self, url: str) -> BeautifulSoup:
-    time.sleep(0.5)
-    # if self.use_webdriver:
-    #   self.webdriver.driver.get(url)
-    #   html = self.webdriver.driver.page_source
-    #   return BeautifulSoup(html, 'html.parser')
-    # else:
+    # we need this step, because site bans due often requests
+    time.sleep(1)
     resp = fetch(url)
     return BeautifulSoup(resp.text, 'html.parser')
 

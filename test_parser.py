@@ -13,8 +13,11 @@ class TestViews(TestCase):
 
   # pytest -v -s test_parser.py::TestViews::test_crawl
   def test_crawl(self) -> None:
-    for uri in self.parser.crawl(1, 1):
-      logger.debug(uri)
+    for title, uri, price in self.parser.crawl(1, 100):
+      logger.info((title, uri, price))
+      self.assertIsInstance(uri, str)
+      self.assertIsInstance(title, str)
+      self.assertIsInstance(price, int)
 
   # pytest -v -s test_parser.py::TestViews::test_regex
   def test_regex(self) -> None:
