@@ -1,6 +1,34 @@
 from typing import Any, Literal
 building_types = ['монолитный', 'кирпичный', 'панельный', 'иное']
 
+patterns: dict[str, tuple[str, list[tuple[str, dict]]]] = {
+    'city': (r"(?P<city>.+), (?P<district>.+) р-н", [
+        ('Алматы, Наурызбайский р-н', {
+            'city': 'Алматы',
+            'district': 'Наурызбайский',
+        })
+    ]),
+    'title': ((
+        # r'(?P<room_count>\d+)-комнатная квартира'
+        r'(, (?P<area>\d+\.?\d+) м²)'
+        r'(, (?P<floor>\d+)/(?P<max_floor>\d+) этаж)?'
+        r'(, мкр (?P<neighborhood>\w+(-\d+)?))?'
+        r'(,(?P<street>(\w+\s?)+))? '
+        r'( (?P<house_number>\d+(\w+)?(/)?(\s\w+)?(\d+)?))?'
+        r'( — (?P<intersection>.*))?'
+    ), [
+        ('3-комнатная квартира, 90 м², 4/10 этаж, Кенесары хана 54/39', {
+            'room_count': '3',
+            'area': '90',
+            'floor': '4',
+            'max_floor': '10',
+            'street': 'Кенесары хана',
+            'house_number': '54/39',
+        })
+    ])
+}
+
+
 test_cases: dict[str, dict[str, tuple[Any, Literal['equal', 'in']]]] = {
     'https://krisha.kz//a/show/674680782': {
         'mortgaged': (False, 'equal'),
@@ -8,24 +36,22 @@ test_cases: dict[str, dict[str, tuple[Any, Literal['equal', 'in']]]] = {
         'build_year': (2013, 'equal'),
         'floor': (4, 'equal'),
         'max_floor': (4, 'max_floor'),
-        'general_area': (45, 'equal'),
-        'kitchen_area': (6, 'equal'),
+        'general_area': (90, 'equal'),
         'mortgage': (False, 'equal'),
         'installment': (False, 'equal'),
         'private_hostel': (False, 'equal'),
-        'district': ('Бостандыкский', 'equal'),
-        'neighborhood': ('Алмагуль', 'equal'),
-        'street': ('Егизбаева', 'equal'),
+        'district': ('Наурызбайский', 'equal'),
+        'street': ('Кенесары хана', 'equal'),
         'house_number': ('12а', 'equal'),
         'intersection': ('Розыбакиева', 'equal'),
         'room_count': (2, 'equal'),
         'images_count': (14, 'equal'),
         'condition': ('хорошее', 'equal'),
         'bathroom': ('совмещенный', 'equal'),
+        'living_area': (90, 'equal'),
     },
     # 'https://krisha.kz/a/show/665531675': {
     #     'general_area': (148, 'equal'),
-    #     'living_area': (88.9, 'equal'),
     #     'kitchen_area': (24.7, 'equal'),
     #     'mortgage': (True, 'equal'),
     #     'installment': (True, 'equal'),

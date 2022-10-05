@@ -1,6 +1,6 @@
 from parser import Parser
 from unittest import TestCase
-from test_data import test_cases
+from test_data import test_cases, patterns
 from logger import get_script_logger
 logger = get_script_logger('DEBUG')
 
@@ -19,11 +19,21 @@ class TestViews(TestCase):
       self.assertIsInstance(title, str)
       self.assertIsInstance(price, int)
 
+  # pytest -v -s test_parser.py::TestViews::test_match_group
+  def test_match_group(self) -> None:
+    for pattern_name, (pattern, test_cases) in patterns.items():
+      for text, answer in test_cases:
+        d = self.parser.match_group(pattern, text)
+        for param_name, true_value in answer.items():
+          logger.debug((param_name, true_value, d, text))
+          self.assertEqual(true_value, d[param_name], d)
+
   # pytest -v -s test_parser.py::TestViews::test_regex
   def test_regex(self) -> None:
     import re
-    pattern = r"(?P<general_area>\d+) м²(, жилая — (?P<living_area>\d*\.?\d*)? м²)?"
-    match = re.match(pattern, '148 м², жилая — 88.9 м², кухня — 24.7 м²')
+    # pattern = r"(?P<general_area>\d+) м²(, жилая — (?P<living_area>\d*\.?\d*)? м²)?"
+    pattern = r"(?P<floor_number>\d+) из (?P<max_floor>\d*)"
+    match = re.match(pattern, '4 из 10')
     if match is not None:
       val = match.groupdict()
       logger.debug(val)
@@ -33,11 +43,10 @@ class TestViews(TestCase):
     for uri, feat in test_cases.items():
       params = self.parser.scrape(uri)
       logger.debug(params)
-      for param_name, test_case in feat.items():
-        value = test_case[0]
-        assert_type = test_case[1]
+      for param_name, (value, assert_type) in feat.items():
         match assert_type:
           case 'equal':
+            logger.debug((param_name, value))
             self.assertEqual(params[param_name], value, {param_name: value})
           case 'in':
             self.assertIn(params[param_name], value, {param_name: value})

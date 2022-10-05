@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 from geopy.geocoders import Nominatim  # type: ignore
 from pandas import DataFrame, Series
 from my_types import TOfferDescription, TOfferShortDescription, TOthers, TParams, TTitleInfo, dtypes
+from test_data import patterns
 import urllib3
 from my_types import TLoc
 logger = logging.getLogger('default')
@@ -147,24 +148,12 @@ class Parser:
     value = soup.select_one(selector)
     if value is not None:
       text = value.getText().strip()
-    pattern = (
-        r'(?P<room_count>\d+)-.*'
-        r'(, (?P<area>\d+\.?\d+) м²)'
-        r'(, (?P<floor>\d+)/(?P<max_floor>\d+) этаж)?'
-        r'(, мкр (?P<neighborhood>\w+(-\d+)?))?'
-        r'(, (?P<street>\w+))?'
-        r'( (?P<house_number>\d+(\w+)?(/)?(\s\w+)?(\d+)?))?'
-        r'( — (?P<intersection>.*))?'
-    )
-    match = re.match(pattern, text)
-    if match is None:
-      return None
-    val = match.groupdict()
-    title_info['room_count'] = int(val['room_count'])
-    title_info['neighborhood'] = val['neighborhood']
-    title_info['street'] = val['street']
-    title_info['house_number'] = val['house_number']
-    title_info['intersection'] = val['intersection']
+    group = self.match_group(patterns['title'][0], text)
+    title_info['room_count'] = int(group['room_count'])
+    title_info['neighborhood'] = group['neighborhood']
+    title_info['street'] = group['street']
+    title_info['house_number'] = group['house_number']
+    title_info['intersection'] = group['intersection']
     return title_info
 
   def get_others(self, soup: BeautifulSoup) -> TOthers | None:
@@ -256,6 +245,13 @@ class Parser:
     else:
       return None
 
+  def match_group(self, pattern: str, val: str) -> dict:
+    match = re.match(pattern, val)
+    if match is not None:
+      return match.groupdict()
+    else:
+      return {}
+
   def get_offer_short_description(self, soup: BeautifulSoup) -> TOfferShortDescription | None:
     # patterns: dict[str, dict[Literal['title_pattern'], str]] = {
     #     'areas': {'title_pattern': r'Площадь', },
@@ -284,15 +280,26 @@ class Parser:
         case 'Тип дома':
           offer_short_description['building_type'] = val
         case 'Этаж':
-          offer_short_description['floor'] = int(val)
+          # offer_short_description['floor'] = int(val)
+          match = re.match(r"(?P<floor>\d+) из (?P<max_floor>\d*)", val)
+          if match is not None:
+            d = match.groupdict()
+            offer_short_description['floor'] = int(d['floor'])
+            offer_short_description['max_floor'] = int(d['max_floor'])
         case 'Площадь, м²':
-          offer_short_description['living_area'] = float(val)
+          group = self.match_group(r"(?P<general_area>\d+) м²", val)
+          # "Алматы, Наурызбайский р-н"
+          offer_short_description['general_area'] = float(group['general_area'])
         case 'Состояние':
           offer_short_description['condition'] = val
         case 'Год постройки':
           offer_short_description['build_year'] = int(val)
         case 'Жилой комплекс':
           offer_short_description['residential_complex'] = val
+        case 'Город':
+          group = self.match_group(patterns['city'][0], val)
+          offer_short_description['city'] = group['city']
+          offer_short_description['district'] = group['district']
         case _:
           logger.debug(f'{key} - {val}')
 
