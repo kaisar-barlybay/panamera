@@ -1,4 +1,4 @@
-from typing import Any, Literal
+from my_types import TTestcase
 building_types = ['монолитный', 'кирпичный', 'панельный', 'иное']
 
 patterns: dict[str, tuple[str, list[tuple[str, dict]]]] = {
@@ -29,26 +29,56 @@ patterns: dict[str, tuple[str, list[tuple[str, dict]]]] = {
 }
 
 
-test_cases: dict[str, dict[str, tuple[Any, Literal['equal', 'in']]]] = {
+test_cases: dict[str, TTestcase] = {
     'https://krisha.kz//a/show/674680782': {
-        'mortgaged': (False, 'equal'),
-        'building_type': ('монолитный', 'equal'),
-        'build_year': (2013, 'equal'),
-        'floor': (4, 'equal'),
-        'max_floor': (4, 'max_floor'),
-        'general_area': (90, 'equal'),
-        'mortgage': (False, 'equal'),
-        'installment': (False, 'equal'),
-        'private_hostel': (False, 'equal'),
-        'district': ('Наурызбайский', 'equal'),
-        'street': ('Кенесары хана', 'equal'),
-        'house_number': ('12а', 'equal'),
-        'intersection': ('Розыбакиева', 'equal'),
-        'room_count': (2, 'equal'),
-        'images_count': (14, 'equal'),
-        'condition': ('хорошее', 'equal'),
-        'bathroom': ('совмещенный', 'equal'),
-        'living_area': (90, 'equal'),
+        'title_info': {
+            'room_count': (4, 'equal'),
+            'general_area': (90, 'equal'),
+            'floor': (4, 'equal'),
+            'max_floor': (10, 'equal'),
+            'street': ('Кенесары хана', 'equal'),
+            'house_number': ('54/39', 'equal'),
+            # 'intersection': ('Розыбакиева', 'equal'),
+        },
+        'offer_short_description': {
+            'building_type': ('монолитный', 'equal'),
+            'floor': (4, 'equal'),
+            'max_floor': (10, 'equal'),
+            'city': ('Алматы', 'equal'),
+            'district': ('Наурызбайский', 'equal'),
+            'general_area': (90, 'equal'),
+            'condition': ('хорошее', 'equal'),
+            'residential_complex': ('Хан Тенгри', 'equal'),
+            'build_year': (2013, 'equal'),
+        },
+        'offer_description': {
+            'bathroom': ('раздельный', 'equal'),
+            'balcony': ('несколько балконов или лоджий', 'equal'),
+            'is_balcony_glazed': (True, 'equal'),
+            'door': ('металлическая', 'equal'),
+            'internet': ('оптика', 'equal'),
+            'parking': ('паркинг', 'equal'),
+            'furniture': ('полностью', 'equal'),
+            'floor_type': ('ламинат', 'equal'),
+            'ceiling_height': (2.9, 'equal'),
+            # bools
+            'security': (True, 'equal'),
+            'entry_phone': (True, 'equal'),
+            'video_security': (True, 'equal'),
+            # oths
+            'former_hostel': (False, 'equal'),
+            'exchange_possible': ('Не интересует', 'equal'),
+        },
+        'others': {
+            'living_area': (90, 'equal'),
+        },
+        'others2': {
+            'mortgaged': (False, 'equal'),
+            'mortgage': (False, 'equal'),
+            'installment': (False, 'equal'),
+            'private_hostel': (False, 'equal'),
+            'images_count': (22, 'equal'),
+        },
     },
     # 'https://krisha.kz/a/show/665531675': {
     #     'general_area': (148, 'equal'),
@@ -65,22 +95,22 @@ test_cases: dict[str, dict[str, tuple[Any, Literal['equal', 'in']]]] = {
     #     'neighborhood': ('Аксай-3', 'equal'),
     #     'house_number': ('10 А', 'equal'),
     #     'intersection': ('Толе би', 'equal'),
-    #     'entry_phone': (True, 'equal'),
+    #
     #     'bars_on_the_window': (True, 'equal'),
-    #     'video_security': (True, 'equal'),
+    #
     #     'plastic_windows': (True, 'equal'),
     #     'non_angular': (True, 'equal'),
     #     'quiet_courtyard': (True, 'equal'),
     # },
     # 'https://krisha.kz/a/show/673740963': {
-    #     'internet': ('оптика', 'equal'),
-    #     'balcony': ('несколько балконов или лоджий', 'equal'),
-    #     'is_balcony_glazed': ('да', 'equal'),
-    #     'door': ('деревянная', 'equal'),
-    #     'parking': ('паркинг', 'equal'),
-    #     'furniture': ('частично меблирована', 'equal'),
-    #     'floor_type': ('ламинат', 'equal'),
-    #     'ceiling_height': (2.8, 'equal'),
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
     #     'entry_phone': (True, 'equal'),
     # },
     # 'https://krisha.kz//a/show/672226546': {

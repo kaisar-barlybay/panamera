@@ -1,4 +1,4 @@
-from typing import TypedDict
+from typing import Any, Literal, TypedDict
 
 
 class TLoc(TypedDict):
@@ -80,7 +80,7 @@ class TOfferDescription(TypedDict, total=False):
   build_year: int | None
   internet: str | None
   furniture: str | None
-  ceiling_height: str | None
+  ceiling_height: float | None
   floor_type: str | None
   telephone: str | None
   door: str | None
@@ -123,6 +123,18 @@ class TOthers(TypedDict, total=False):
   quiet_courtyard: bool
   air_conditioning: bool
   commercial_convenient: bool
+
+
+class TOthers2(TypedDict, total=False):
+  installment: bool
+  mortgage: bool
+  building_type: str
+  price: int
+  mortgaged: bool
+  images_count: int
+  private_hostel: bool
+  city: str
+  text: str
 
 
 dtypes = {
@@ -180,3 +192,92 @@ dtypes = {
     'city': 'str',
     'text': 'str',
 }
+
+LI = Literal['in']
+LE = Literal['equal']
+
+SLE = tuple[str, LE]
+ILE = tuple[int, LE]
+FLE = tuple[float, LE]
+BLE = tuple[bool, LE]
+
+
+class TTTitleInfo(TypedDict, total=False):
+  room_count: ILE
+  neighborhood: SLE
+  street: SLE
+  house_number: SLE
+  intersection: SLE
+
+
+class TTOfferShortDescription(TypedDict, total=False):
+  building_type: SLE
+  floor: ILE
+  max_floor: ILE
+  city: SLE
+  district: SLE
+  general_area: FLE
+  condition: SLE
+  residential_complex: SLE
+  build_year: ILE
+
+
+class TTOfferDescription(TypedDict, total=False):
+  bathroom: SLE
+  balcony: SLE
+  is_balcony_glazed: BLE
+  door: SLE
+  living_area: FLE
+  internet: SLE
+  parking: SLE
+  furniture: SLE
+  floor_type: SLE
+  ceiling_height: FLE
+  # security
+  security: BLE  # охрана
+  entry_phone: BLE  # домофон
+  video_security: BLE  # видеонаблюдение
+  # oths
+  former_hostel: BLE  # бывшее общежитие
+  exchange_possible: SLE  # обмен возможен
+  # # ?
+  # video_entry_phone: BLE
+  # kitchen_area: FLE
+  # telephone: SLE
+  # bars_on_the_window: BLE
+  # code_lock: BLE
+  # alarm: BLE
+  # concierge: BLE
+
+
+class TTOthers(TypedDict, total=False):
+  plastic_windows: BLE
+  non_angular: BLE
+  improved: BLE
+  rooms_isolated: BLE
+  studio_kitchen: BLE
+  kitchen_builtin: BLE
+  new_plumbing: BLE
+  pantry: BLE
+  counters: BLE
+  quiet_courtyard: BLE
+  air_conditioning: BLE
+  commercial_convenient: BLE
+
+
+class TTOthers2(TypedDict, total=False):
+  installment: BLE
+  mortgage: BLE
+  price: ILE
+  mortgaged: BLE
+  images_count: ILE
+  private_hostel: BLE
+  text: SLE
+
+
+class TTestcase(TypedDict, total=False):
+  title_info: TTTitleInfo
+  offer_short_description: TTOfferShortDescription
+  offer_description: TTOfferDescription
+  others: TTOthers
+  others2: TTOthers2

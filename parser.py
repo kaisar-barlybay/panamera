@@ -8,7 +8,7 @@ from typing import Generator, Literal, Any
 from bs4 import BeautifulSoup
 from geopy.geocoders import Nominatim  # type: ignore
 from pandas import DataFrame, Series
-from my_types import TOfferDescription, TOfferShortDescription, TOthers, TParams, TTitleInfo, dtypes
+from my_types import TOfferDescription, TOfferShortDescription, TOthers, TOthers2, TParams, TTitleInfo, dtypes
 from test_data import patterns
 import urllib3
 from my_types import TLoc
@@ -114,6 +114,7 @@ class Parser:
           yield uri, title, int(price)
 
   def get_soup(self, url: str) -> BeautifulSoup:
+    logger.debug(f'Fetching url: {url}')
     # we need this step, because site bans due often requests
     time.sleep(1)
     resp = fetch(url)
@@ -375,11 +376,13 @@ class Parser:
         'telephone': {'title_pattern': r'Телефон', },
         'internet': {'title_pattern': r'Интернет', },
         'balcony': {'title_pattern': r'Балкон$', },
+        'bathroom': {'title_pattern': r'Санузел$', },
         'is_balcony_glazed': {'title_pattern': r'Балкон остеклён', },
         'door': {'title_pattern': r'Дверь', },
         'parking': {'title_pattern': r'Парковка', },
-        'furniture': {'title_pattern': r'Мебель', },
+        'furniture': {'title_pattern': r'Квартира меблирована', },
         'floor_type': {'title_pattern': r'Пол$', },
+        'former_hostel': {'title_pattern': r'Бывшее общежитие', },
         'ceiling_height': {'title_pattern': r'Потолки', },
         'security': {'title_pattern': r'Безопасность', },
         # 'internet': {'title_pattern': r'Санузел', },
@@ -420,15 +423,19 @@ class Parser:
               case 'balcony':
                 offer_short_description['balcony'] = value
               case 'is_balcony_glazed':
-                offer_short_description['is_balcony_glazed'] = value
+                offer_short_description['is_balcony_glazed'] = value == 'да'
               case 'door':
                 offer_short_description['door'] = value
+              case 'bathroom':
+                offer_short_description['bathroom'] = value
               case 'parking':
                 offer_short_description['parking'] = value
               case 'furniture':
                 offer_short_description['furniture'] = value
               case 'floor_type':
                 offer_short_description['floor_type'] = value
+              case 'former_hostel':
+                offer_short_description['former_hostel'] = value == 'да'
               case 'ceiling_height':
                 val = re.match(r'(?P<ceiling_height>\d+\.?\d*) м', value)
                 offer_short_description['ceiling_height'] = float(val['ceiling_height'])
@@ -493,6 +500,13 @@ class Parser:
     image_lis = soup.select(selector)
     return len(image_lis)
 
+  def enrich(self, d1: dict, d2: dict | None) -> dict:
+    if d2 is not None:
+      for k, v in d2.items():
+        if k not in d1:
+          d1[k] = v
+    return d1
+
   def scrape(self, uri: str) -> dict:
     logger.info(f"Scraping uri: {uri}")
     soup = self.get_soup(uri)
@@ -502,74 +516,36 @@ class Parser:
     }
 
     title_info = self.get_title_info(soup)
-    if title_info is not None:
-      params['room_count'] = title_info.get('room_count', None)
-      params['neighborhood'] = title_info.get('neighborhood', None)
-      params['street'] = title_info.get('street', None)
-      params['house_number'] = title_info.get('house_number', None)
-      params['intersection'] = title_info.get('intersection', None)
+    self.enrich(params, title_info)
 
     offer_short_description = self.get_offer_short_description(soup)
-    if offer_short_description is not None:
-      params['build_year'] = offer_short_description.get('build_year', None)
-      params['district'] = offer_short_description.get('district', None)
-      params['floor'] = offer_short_description.get('floor', None)
-      params['residential_complex'] = offer_short_description.get('residential_complex', None)
-      params['max_floor'] = offer_short_description.get('max_floor', None)
-      params['general_area'] = offer_short_description.get('general_area', None)
-      params['bathroom'] = offer_short_description.get('bathroom', None)
-      params['living_area'] = offer_short_description.get('living_area', None)
-      params['kitchen_area'] = offer_short_description.get('kitchen_area', None)
-      params['condition'] = offer_short_description.get('condition', None)
+    self.enrich(params, offer_short_description)
 
     offer_description = self.get_offer_description(soup)
-    if offer_description is not None:
-      params['internet'] = offer_description.get('internet', None)
-      params['furniture'] = offer_description.get('furniture', None)
-      params['ceiling_height'] = offer_description.get('ceiling_height', None)
-      params['floor_type'] = offer_description.get('floor_type', None)
-      params['telephone'] = offer_description.get('telephone', None)
-      params['door'] = offer_description.get('door', None)
-      params['balcony'] = offer_description.get('balcony', None)
-      params['parking'] = offer_description.get('parking', None)
-      params['is_balcony_glazed'] = offer_description.get('is_balcony_glazed', None)
-      params['bars_on_the_window'] = offer_description.get('bars_on_the_window', None)
-      params['security'] = offer_description.get('security', None)
-      params['entry_phone'] = offer_description.get('entry_phone', None)
-      params['code_lock'] = offer_description.get('code_lock', None)
-      params['alarm'] = offer_description.get('alarm', None)
-      params['video_security'] = offer_description.get('video_security', None)
-      params['video_entry_phone'] = offer_description.get('video_entry_phone', None)
-      params['concierge'] = offer_description.get('concierge', None)
+    self.enrich(params, offer_description)
 
     others = self.get_others(soup)
-    if others is not None:
-      params['plastic_windows'] = others.get('plastic_windows', None)
-      params['non_angular'] = others.get('non_angular', None)
-      params['improved'] = others.get('improved', None)
-      params['rooms_isolated'] = others.get('rooms_isolated', None)
-      params['studio_kitchen'] = others.get('studio_kitchen', None)
-      params['kitchen_builtin'] = others.get('kitchen_builtin', None)
-      params['new_plumbing'] = others.get('new_plumbing', None)
-      params['pantry'] = others.get('pantry', None)
-      params['counters'] = others.get('counters', None)
-      params['quiet_courtyard'] = others.get('quiet_courtyard', None)
-      params['air_conditioning'] = others.get('air_conditioning', None)
-      params['commercial_convenient'] = others.get('commercial_convenient', None)
+    self.enrich(params, others)
 
-    installment, mortgage = self.get_installment_mortgage(soup)
-    params['installment'] = installment
-    params['mortgage'] = mortgage
-
-    building_type, build_year = self.get_building_type__building_year(soup)
-    params['building_type'] = building_type
-    # params['build_year'] = build_year
-
-    params['price'] = self.get_price(soup)
-    params['mortgaged'] = self.get_mortgaged(soup)
-    params['images_count'] = self.get_images_count(soup)
-    params['private_hostel'] = self.get_private_hostel(soup)
-    params['city'] = self.get_city(soup)
-    params['text'] = self.get_text(soup)
+    others2 = self.get_others2(soup)
+    self.enrich(params, others2)
 
     return params
+
+  def get_others2(self, soup) -> TOthers2:
+    others2 = {}
+    installment, mortgage = self.get_installment_mortgage(soup)
+    others2['installment'] = installment
+    others2['mortgage'] = mortgage
+
+    building_type, build_year = self.get_building_type__building_year(soup)
+    others2['building_type'] = building_type
+    # params['build_year'] = build_year
+
+    others2['price'] = self.get_price(soup)
+    others2['mortgaged'] = self.get_mortgaged(soup)
+    others2['images_count'] = self.get_images_count(soup)
+    others2['private_hostel'] = self.get_private_hostel(soup)
+    others2['city'] = self.get_city(soup)
+    others2['text'] = self.get_text(soup)
+    return others2

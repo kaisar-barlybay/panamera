@@ -1,6 +1,7 @@
 jupyter
 transliterate==1.10.2
-mypy==0.981
+mypy-extensions==0.4.3
+mypy==0.931
 matplotlib==3.6.0
 pandas==1.5.0
 scipy==1.9.1
