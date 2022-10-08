@@ -193,86 +193,78 @@ dtypes = {
     'text': 'str',
 }
 
-LI = Literal['in']
-LE = Literal['equal']
-
-SLE = tuple[str, LE]
-ILE = tuple[int, LE]
-FLE = tuple[float, LE]
-BLE = tuple[bool, LE]
-
 
 class TTTitleInfo(TypedDict, total=False):
-  room_count: ILE
-  neighborhood: SLE
-  street: SLE
-  house_number: SLE
-  intersection: SLE
+  room_count: int
+  neighborhood: str
+  street: str
+  house_number: str
+  intersection: str
 
 
 class TTOfferShortDescription(TypedDict, total=False):
-  building_type: SLE
-  floor: ILE
-  max_floor: ILE
-  city: SLE
-  district: SLE
-  general_area: FLE
-  condition: SLE
-  residential_complex: SLE
-  build_year: ILE
+  building_type: str
+  floor: int
+  max_floor: int
+  city: str
+  district: str
+  general_area: float
+  condition: str
+  residential_complex: str
+  build_year: int
 
 
 class TTOfferDescription(TypedDict, total=False):
-  bathroom: SLE
-  balcony: SLE
-  is_balcony_glazed: BLE
-  door: SLE
-  living_area: FLE
-  internet: SLE
-  parking: SLE
-  furniture: SLE
-  floor_type: SLE
-  ceiling_height: FLE
+  bathroom: str
+  balcony: str
+  is_balcony_glazed: bool
+  door: str
+  living_area: float
+  internet: str
+  parking: str
+  furniture: str
+  floor_type: str
+  ceiling_height: float
   # security
-  security: BLE  # охрана
-  entry_phone: BLE  # домофон
-  video_security: BLE  # видеонаблюдение
+  security: bool  # охрана
+  entry_phone: bool  # домофон
+  video_security: bool  # видеонаблюдение
   # oths
-  former_hostel: BLE  # бывшее общежитие
-  exchange_possible: SLE  # обмен возможен
+  former_hostel: bool  # бывшее общежитие
+  exchange_possible: str  # обмен возможен
   # # ?
-  # video_entry_phone: BLE
-  # kitchen_area: FLE
-  # telephone: SLE
-  # bars_on_the_window: BLE
-  # code_lock: BLE
-  # alarm: BLE
-  # concierge: BLE
+  # video_entry_phone: bool
+  # kitchen_area: float
+  # telephone: str
+  # bars_on_the_window: bool
+  # code_lock: bool
+  # alarm: bool
+  # concierge: bool
 
 
 class TTOthers(TypedDict, total=False):
-  plastic_windows: BLE
-  non_angular: BLE
-  improved: BLE
-  rooms_isolated: BLE
-  studio_kitchen: BLE
-  kitchen_builtin: BLE
-  new_plumbing: BLE
-  pantry: BLE
-  counters: BLE
-  quiet_courtyard: BLE
-  air_conditioning: BLE
-  commercial_convenient: BLE
+  plastic_windows: bool
+  non_angular: bool
+  improved: bool
+  rooms_isolated: bool
+  studio_kitchen: bool
+  kitchen_builtin: bool
+  new_plumbing: bool
+  pantry: bool
+  counters: bool
+  quiet_courtyard: bool
+  air_conditioning: bool
+  commercial_convenient: bool
 
 
 class TTOthers2(TypedDict, total=False):
-  installment: BLE
-  mortgage: BLE
-  price: ILE
-  mortgaged: BLE
-  images_count: ILE
-  private_hostel: BLE
-  text: SLE
+  installment: bool
+  mortgage: bool
+  price: int
+  mortgaged: bool
+  images_count: int
+  private_hostel: bool
+  text: str
 
 
 class TTestcase(TypedDict, total=False):

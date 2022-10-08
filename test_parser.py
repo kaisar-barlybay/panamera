@@ -21,6 +21,7 @@ class TestViews(TestCase):
       self.assertIsInstance(title, str)
       self.assertIsInstance(price, int)
 
+  # Kaisar
   # pytest -v -s test_parser.py::TestViews::test_match_group
   def test_match_group(self) -> None:
     for pattern_name, (pattern, test_cases) in patterns.items():
@@ -28,7 +29,7 @@ class TestViews(TestCase):
         d = self.parser.match_group(pattern, text)
         for param_name, true_value in answer.items():
           logger.debug((param_name, true_value, d, text))
-          self.assertEqual(true_value, d[param_name], d)
+          self.assertEqual(str(true_value), d[param_name], d)
 
   # pytest -v -s test_parser.py::TestViews::test_regex
   def test_regex(self) -> None:
@@ -55,6 +56,7 @@ class TestViews(TestCase):
             self.assertIn(scraper_val, test_val, {param_name: test_val})
         logger.info(f'[OK], {test_val} == {scraper_val}')
 
+  # Olzhas
   # pytest -v -s test_parser.py::TestViews::test_title_info
   def test_title_info(self) -> None:
     for uri, t in test_cases.items():
@@ -63,14 +65,9 @@ class TestViews(TestCase):
       if title_info is None:
         raise Exception
       logger.debug(title_info)
-      for param_name, (test_val, assert_type) in t['title_info'].items():
-        test_val, assert_type = cast(tuple[Any, str], (test_val, assert_type))
+      for param_name, test_val in t['title_info'].items():
         scraper_val = title_info[param_name]
-        match assert_type:
-          case 'in':
-            self.assertIn(scraper_val, test_val, {param_name: test_val})
-          case 'equal':
-            self.assertEqual(scraper_val, test_val, {param_name: test_val})
+        self.assertEqual(scraper_val, test_val, {param_name: test_val})
         logger.info(f'[OK], {test_val} == {scraper_val}')
 
   # pytest -v -s test_parser.py::TestViews::test_offer_short_description

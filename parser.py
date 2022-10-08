@@ -143,18 +143,24 @@ class Parser:
     else:
       return False
 
+  # Shynar
   def get_title_info(self, soup: BeautifulSoup) -> TTitleInfo | None:
     title_info: TTitleInfo = {}
     selector = 'div.offer__advert-title > h1'
     value = soup.select_one(selector)
-    if value is not None:
-      text = value.getText().strip()
-    group = self.match_group(patterns['title'][0], text)
+    if value is None:
+      return None
+    # 3-комнатная квартира, 90 м², 4/10 этаж, Кенесары хана 54/39
+    text = value.getText().strip()
+    logger.debug(f'[{text}]')
+    group = self.match_group(patterns['title_info'][0], text)
     title_info['room_count'] = int(group['room_count'])
-    title_info['neighborhood'] = group['neighborhood']
+    title_info['floor'] = int(group['floor'])
+    title_info['max_floor'] = int(group['max_floor'])
     title_info['street'] = group['street']
     title_info['house_number'] = group['house_number']
-    title_info['intersection'] = group['intersection']
+    title_info['area'] = float(group['area'])
+    # title_info['intersection'] = group['intersection']
     return title_info
 
   def get_others(self, soup: BeautifulSoup) -> TOthers | None:
@@ -246,22 +252,20 @@ class Parser:
     else:
       return None
 
-  def match_group(self, pattern: str, val: str) -> dict:
-    match = re.match(pattern, val)
+  def denonify(self, d: dict) -> dict:
+    for k in list(d.keys()):
+      if d[k] == None or d[k] == [] or d[k] == {} or d[k] == '':
+        del d[k]
+    return d
+
+  def match_group(self, pattern: str, text: str) -> dict:
+    match = re.match(pattern, text)
     if match is not None:
-      return match.groupdict()
+      return self.denonify(match.groupdict())
     else:
       return {}
 
   def get_offer_short_description(self, soup: BeautifulSoup) -> TOfferShortDescription | None:
-    # patterns: dict[str, dict[Literal['title_pattern'], str]] = {
-    #     'areas': {'title_pattern': r'Площадь', },
-    #     'floor_max_floor': {'title_pattern': r'Этаж'},
-    #     'residential_complex': {'title_pattern': r'Жилой комплекс'},
-    #     'district': {'title_pattern': r'Город'},
-    #     'condition': {'title_pattern': r'Состояние'},
-    #     'bathroom': {'title_pattern': r'Санузел'},
-    # }
     offer_short_description: TOfferShortDescription = {}
     block_selector = 'div.offer__info-item'
     key_selector = 'div.offer__info-title'
@@ -298,76 +302,11 @@ class Parser:
         case 'Жилой комплекс':
           offer_short_description['residential_complex'] = val
         case 'Город':
-          group = self.match_group(patterns['city'][0], val)
+          group = self.match_group(patterns['city'], val)
           offer_short_description['city'] = group['city']
           offer_short_description['district'] = group['district']
         case _:
           logger.debug(f'{key} - {val}')
-
-      # # selector1 = f"div:nth-child({i}) > div.offer__info-title"
-      # # selector2 = f'div:nth-child({i}) > div.offer__advert-short-info'
-      # for param, params in patterns.items():
-      #   try:
-      #     tag = soup.select_one(selector1)
-      #     if tag is None:
-      #       continue
-      #     title = tag.getText().strip()
-
-      #     title_value = re.match(params['title_pattern'], title)
-      #     if title_value:
-      #       tag = soup.select_one(selector2)
-      #       if tag is None:
-      #         continue
-      #       value = tag.getText().strip()
-      #       match param:
-      #         case 'areas':
-      #           pattern = (
-      #               r"(?P<general_area>\d*\.?\d*) м²"
-      #               r"(, жилая — (?P<living_area>\d*\.?\d*)? м²)?"
-      #               r"(, кухня — (?P<kitchen_area>\d*\.?\d*)? м²)?"
-      #           )
-      #           match = re.match(pattern, value)
-      #           if match is not None:
-      #             val_tag = match.groupdict()
-      #             offer_short_description['general_area'] = self.parseFloat(val_tag, 'general_area')
-      #             offer_short_description['living_area'] = self.parseFloat(val_tag, 'living_area')
-      #             offer_short_description['kitchen_area'] = self.parseFloat(val_tag, 'kitchen_area')
-      #           # 148                 м², жилая — 88.9                  м², кухня — 24.7                   м²
-      #         case 'floor_max_floor':
-      #           pattern = (
-      #               r"(?P<floor>\d+)"
-      #               r"( из (?P<max_floor>\d+))?"
-      #           )
-      #           match = re.match(pattern, value)
-      #           if match is not None:
-      #             val_tag = match.groupdict()
-      #             offer_short_description['floor'] = self.parseInt(val_tag, 'floor')
-      #             offer_short_description['max_floor'] = self.parseInt(val_tag, 'max_floor')
-      #           else:
-      #             logger.error(f"{value}")
-      #         case 'residential_complex':
-      #           offer_short_description['residential_complex'] = value
-      #         case 'bathroom':
-      #           offer_short_description['bathroom'] = value
-      #         case 'district':
-      #           pattern = (
-      #               r"(?P<city>\w+)"
-      #               r"(, (?P<district>\w+) р-н)?"
-      #               r"\.*"
-      #           )
-      #           match = re.match(pattern, value)
-      #           if match is not None:
-      #             val_tag = match.groupdict()
-      #             district_val = val_tag.get('district')
-      #             if district_val is not None:
-      #               offer_short_description['district'] = district_val
-      #         case 'condition':
-      #           offer_short_description['condition'] = value
-      #         case _:
-      #           pass
-        # except AttributeError as e:
-        #   continue
-    # 45 м², кухня — 6 м²
 
     return offer_short_description
 
