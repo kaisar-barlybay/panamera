@@ -97,6 +97,7 @@ class Parser:
 
   def crawl(self, from_page: int, to_page: int) -> Generator[tuple[str, str, int], None, None]:
     for i in range(from_page, to_page + 1):
+      'https://krisha.kz/prodazha/kvartiry/almaty/?das[_sys.hasphoto]=1&das[flat.priv_dorm]=2&das[house.year][from]=1970&das[who]=1&page=2'
       url = f'https://krisha.kz/prodazha/kvartiry/almaty/?page={i}'
       soup = self.get_soup(url)
       main_info_selector = 'div.a-card__main-info'
@@ -160,7 +161,6 @@ class Parser:
     title_info['street'] = group['street']
     title_info['house_number'] = group['house_number']
     title_info['area'] = float(group['area'])
-    # title_info['intersection'] = group['intersection']
     return title_info
 
   def get_others(self, soup: BeautifulSoup) -> TOthers | None:
