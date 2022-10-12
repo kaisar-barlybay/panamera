@@ -1,4 +1,4 @@
-from typing import TypedDict
+from typing import Any, Literal, TypedDict
 
 
 class TLoc(TypedDict):
@@ -80,7 +80,7 @@ class TOfferDescription(TypedDict, total=False):
   build_year: int | None
   internet: str | None
   furniture: str | None
-  ceiling_height: str | None
+  ceiling_height: float | None
   floor_type: str | None
   telephone: str | None
   door: str | None
@@ -123,6 +123,18 @@ class TOthers(TypedDict, total=False):
   quiet_courtyard: bool
   air_conditioning: bool
   commercial_convenient: bool
+
+
+class TOthers2(TypedDict, total=False):
+  installment: bool
+  mortgage: bool
+  building_type: str
+  price: int
+  mortgaged: bool
+  images_count: int
+  private_hostel: bool
+  city: str
+  text: str
 
 
 dtypes = {
@@ -180,3 +192,84 @@ dtypes = {
     'city': 'str',
     'text': 'str',
 }
+
+
+class TTTitleInfo(TypedDict, total=False):
+  room_count: int
+  neighborhood: str
+  street: str
+  house_number: str
+  intersection: str
+
+
+class TTOfferShortDescription(TypedDict, total=False):
+  building_type: str
+  floor: int
+  max_floor: int
+  city: str
+  district: str
+  general_area: float
+  condition: str
+  residential_complex: str
+  build_year: int
+
+
+class TTOfferDescription(TypedDict, total=False):
+  bathroom: str
+  balcony: str
+  is_balcony_glazed: bool
+  door: str
+  living_area: float
+  internet: str
+  parking: str
+  furniture: str
+  floor_type: str
+  ceiling_height: float
+  # security
+  security: bool  # охрана
+  entry_phone: bool  # домофон
+  video_security: bool  # видеонаблюдение
+  # oths
+  former_hostel: bool  # бывшее общежитие
+  exchange_possible: str  # обмен возможен
+  # # ?
+  # video_entry_phone: bool
+  # kitchen_area: float
+  # telephone: str
+  # bars_on_the_window: bool
+  # code_lock: bool
+  # alarm: bool
+  # concierge: bool
+
+
+class TTOthers(TypedDict, total=False):
+  plastic_windows: bool
+  non_angular: bool
+  improved: bool
+  rooms_isolated: bool
+  studio_kitchen: bool
+  kitchen_builtin: bool
+  new_plumbing: bool
+  pantry: bool
+  counters: bool
+  quiet_courtyard: bool
+  air_conditioning: bool
+  commercial_convenient: bool
+
+
+class TTOthers2(TypedDict, total=False):
+  installment: bool
+  mortgage: bool
+  price: int
+  mortgaged: bool
+  images_count: int
+  private_hostel: bool
+  text: str
+
+
+class TTestcase(TypedDict, total=False):
+  title_info: TTTitleInfo
+  offer_short_description: TTOfferShortDescription
+  offer_description: TTOfferDescription
+  others: TTOthers
+  others2: TTOthers2
