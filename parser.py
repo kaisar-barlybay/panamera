@@ -269,7 +269,7 @@ class Parser:
     for block in blocks:
       key_tag = block.select_one(key_selector)
       val_tag = block.select_one(val_selector)
-      logger.debug((key_tag, val_tag))
+      # logger.debug((key_tag, val_tag))
       if key_tag is None or val_tag is None:
         continue
 

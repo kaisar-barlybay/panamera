@@ -9,12 +9,12 @@ patterns: dict[str, tuple[str, list[tuple[str, dict]]]] = {
         })
     ]),
     'title': ((
-        # r'(?P<room_count>\d+)-комнатная квартира'
+        r'(?P<room_count>\d+)-комнатная квартира'
         r'(, (?P<area>\d+\.?\d+) м²)'
         r'(, (?P<floor>\d+)/(?P<max_floor>\d+) этаж)?'
         r'(, мкр (?P<neighborhood>\w+(-\d+)?))?'
-        r'(,(?P<street>(\w+\s?)+))? '
-        r'( (?P<house_number>\d+(\w+)?(/)?(\s\w+)?(\d+)?))?'
+        r'(, (?P<street>(\w+\s?)+))? '
+        r'(' + r'(?P<house_number>' + r'\d+' + r'(\/\d+)?' + r')' + r')?'
         r'( — (?P<intersection>.*))?'
     ), [
         ('3-комнатная квартира, 90 м², 4/10 этаж, Кенесары хана 54/39', {
@@ -24,7 +24,7 @@ patterns: dict[str, tuple[str, list[tuple[str, dict]]]] = {
             'max_floor': '10',
             'street': 'Кенесары хана',
             'house_number': '54/39',
-        })
+        }),
     ])
 }
 
@@ -42,13 +42,24 @@ test_cases: dict[str, dict[str, tuple[Any, Literal['equal', 'in']]]] = {
         'private_hostel': (False, 'equal'),
         'district': ('Наурызбайский', 'equal'),
         'street': ('Кенесары хана', 'equal'),
-        'house_number': ('12а', 'equal'),
-        'intersection': ('Розыбакиева', 'equal'),
-        'room_count': (2, 'equal'),
-        'images_count': (14, 'equal'),
+        'house_number': ('54/39', 'equal'),
+        'room_count': (3, 'equal'),
+        'images_count': (22, 'equal'),
         'condition': ('хорошее', 'equal'),
-        'bathroom': ('совмещенный', 'equal'),
         'living_area': (90, 'equal'),
+        # description
+        'bathroom': ('раздельный', 'equal'),
+        'balcony': ('несколько балконов или лоджий', 'equal'),
+        'is_balcony_glazed': ('да', 'equal'),
+        'door': ('металлическая', 'equal'),
+        'internet': ('оптика', 'equal'),
+        'furniture': ('полностью', 'equal'),
+        'floor_type': ('ламинат', 'equal'),
+        'ceiling_height': (2.9, 'equal'),
+        # description safety
+        'security': (True, 'equal'),
+        'entry_phone': (True, 'equal'),
+        'video_security': (True, 'equal'),
     },
     # 'https://krisha.kz/a/show/665531675': {
     #     'general_area': (148, 'equal'),
@@ -67,20 +78,20 @@ test_cases: dict[str, dict[str, tuple[Any, Literal['equal', 'in']]]] = {
     #     'intersection': ('Толе би', 'equal'),
     #     'entry_phone': (True, 'equal'),
     #     'bars_on_the_window': (True, 'equal'),
-    #     'video_security': (True, 'equal'),
+
     #     'plastic_windows': (True, 'equal'),
     #     'non_angular': (True, 'equal'),
     #     'quiet_courtyard': (True, 'equal'),
     # },
     # 'https://krisha.kz/a/show/673740963': {
-    #     'internet': ('оптика', 'equal'),
-    #     'balcony': ('несколько балконов или лоджий', 'equal'),
-    #     'is_balcony_glazed': ('да', 'equal'),
-    #     'door': ('деревянная', 'equal'),
+
+
+
+
     #     'parking': ('паркинг', 'equal'),
-    #     'furniture': ('частично меблирована', 'equal'),
-    #     'floor_type': ('ламинат', 'equal'),
-    #     'ceiling_height': (2.8, 'equal'),
+
+
+
     #     'entry_phone': (True, 'equal'),
     # },
     # 'https://krisha.kz//a/show/672226546': {
