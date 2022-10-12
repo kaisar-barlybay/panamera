@@ -29,7 +29,8 @@ class TestViews(TestCase):
         d = self.parser.match_group(pattern, text)
         for param_name, true_value in answer.items():
           logger.debug((param_name, true_value, d, text))
-          self.assertEqual(str(true_value), d[param_name], d)
+          d_val = d.get(param_name)
+          self.assertEqual(str(true_value), d_val, d)
 
   # pytest -v -s test_parser.py::TestViews::test_regex
   def test_regex(self) -> None:

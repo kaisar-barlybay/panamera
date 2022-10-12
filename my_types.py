@@ -10,7 +10,7 @@ class TParams(TypedDict, total=False):
   uri: str
   # title info
   room_count: int | None
-  neighborhood: str | None
+  microdistrict: str | None  # микрорайон
   street: str | None
   house_number: str | None
   intersection: str | None
@@ -70,7 +70,7 @@ class TParams(TypedDict, total=False):
 
 class TTitleInfo(TypedDict, total=False):
   room_count: int
-  neighborhood: str
+  microdistrict: str
   street: str
   house_number: str
   intersection: str
@@ -139,7 +139,7 @@ class TOthers2(TypedDict, total=False):
 
 dtypes = {
     'room_count': 'int64',
-    'neighborhood': 'str',
+    'microdistrict': 'str',
     'street': 'str',
     'house_number': 'str',
     'intersection': 'str',
@@ -196,7 +196,7 @@ dtypes = {
 
 class TTTitleInfo(TypedDict, total=False):
   room_count: int
-  neighborhood: str
+  microdistrict: str
   street: str
   house_number: str
   intersection: str
