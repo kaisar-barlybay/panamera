@@ -27,6 +27,7 @@ class TestViews(TestCase):
     for pattern_name, (pattern, test_cases) in patterns.items():
       for text, answer in test_cases:
         d = self.parser.match_group(pattern, text)
+        logger.debug((pattern))
         for param_name, true_value in answer.items():
           logger.debug((param_name, true_value, d, text))
           d_val = d.get(param_name)

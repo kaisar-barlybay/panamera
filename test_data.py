@@ -108,7 +108,7 @@ test_cases: dict[str, TTestcase] = {
             'max_floor': 5,
             'microdistrict': 'Кулагер',
             'street': 'Мукатая Беспакова',
-            'house_number': None,
+            # 'house_number': None,
             'intersection': 'Омарова',
         },
         'offer_short_description': {
@@ -127,9 +127,9 @@ test_cases: dict[str, TTestcase] = {
 }
 
 pats = {
-    'street': r'(?P<street>[а-яА-Я]{1,}(\s[а-яА-Я]+){0,})',
-    'house_number': r'(?P<house_number>(\d)+(\/?\w*)*)',
-    'microdistrict': r'(?P<microdistrict>\w+(-\d+)?)',
+    'street': r'(?P<street>[а-яА-Я0-9]{1,}(-й мкр)?(\s[а-яА-Я]+){0,})',
+    'house_number': r' (?P<house_number>(\d)+(\/?\w*)*[а-яА-Я]*)',
+    'microdistrict': r'мкр (?P<microdistrict>[а-яА-Я№0-9]{1,})',
     'intersection': r' — (?P<intersection>[а-яА-Я]{1,}(\s[а-яА-Я]+){0,})',
 }
 
@@ -151,12 +151,15 @@ patterns: dict[str, tuple[str, list[tuple[str, dict]]]] = {
         ('Мынбаева 47А', {
             'street': 'Мынбаева'
         }),
+        ('12-й мкр 22/2', {
+            'street': '12-й мкр'
+        }),
     ]),
     'house_number': (pats['house_number'], [
-        ('54/39', {
+        (' 54/39', {
             'house_number': '54/39'
         }),
-        ('47А', {
+        (' 47А', {
             'house_number': '47А'
         }),
     ]),
@@ -167,17 +170,31 @@ patterns: dict[str, tuple[str, list[tuple[str, dict]]]] = {
         (' — Кенесары хана', {
             'intersection': 'Кенесары хана'
         }),
+        (' — Омарова', {
+            'intersection': 'Омарова'
+        }),
+    ]),
+    'microdistrict': (pats['microdistrict'], [
+        ('мкр №12', {
+            'microdistrict': '№12'
+        }),
+        ('мкр Кулагер', {
+            'microdistrict': 'Кулагер'
+        }),
+        # (' — Кенесары хана', {
+        #     'intersection': 'Кенесары хана'
+        # }),
     ]),
     'title_info': ((
         r'(?P<room_count>\d+)-комнатная квартира' +
         r'(, (?P<area>\d+\.?\d+) м²)' +
         r'(, (?P<floor>\d+)/(?P<max_floor>\d+) этаж)?' +
-        # r'(, мкр ' +
-        # pats['microdistrict'] +
-        # r')?' +
+        r'(, ' +
+        pats['microdistrict'] +
+        r')?' +
         r'(, ' +
         pats['street'] +
-        r')? ' +
+        r')?' +
         r'(' +
         pats['house_number'] +
         r')?' +
