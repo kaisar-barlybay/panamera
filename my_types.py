@@ -70,6 +70,9 @@ class TParams(TypedDict, total=False):
 
 class TTitleInfo(TypedDict, total=False):
   room_count: int
+  max_floor: int
+  floor: int
+  area: float
   microdistrict: str
   street: str
   house_number: str

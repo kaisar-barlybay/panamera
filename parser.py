@@ -144,7 +144,20 @@ class Parser:
     else:
       return False
 
+  def dede(self, d: dict, name: str, t: Literal['str', 'float', 'int']) -> Any:
+    d_str = d.get(name)
+    if d_str is not None:
+      match t:
+        case 'int':
+          return int(d_str)
+        case 'float':
+          return float(d_str)
+        case _:
+          return d_str
+    return None
+
   # Shynar
+
   def get_title_info(self, soup: BeautifulSoup) -> TTitleInfo | None:
     title_info: TTitleInfo = {}
     selector = 'div.offer__advert-title > h1'
@@ -153,14 +166,17 @@ class Parser:
       return None
     # 3-комнатная квартира, 90 м², 4/10 этаж, Кенесары хана 54/39
     text = value.getText().strip()
-    logger.debug(f'[{text}]')
+    logger.debug(f'[{repr(text)}]')
     group = self.match_group(patterns['title_info'][0], text)
-    title_info['room_count'] = int(group['room_count'])
-    title_info['floor'] = int(group['floor'])
-    title_info['max_floor'] = int(group['max_floor'])
-    title_info['street'] = group['street']
-    title_info['house_number'] = group['house_number']
-    title_info['area'] = float(group['area'])
+
+    title_info['room_count'] = self.dede(group, 'room_count', 'int')
+    title_info['floor'] = self.dede(group, 'floor', 'int')
+    title_info['max_floor'] = self.dede(group, 'max_floor', 'int')
+    title_info['street'] = self.dede(group, 'street', 'str')
+    title_info['house_number'] = self.dede(group, 'house_number', 'str')
+    title_info['area'] = self.dede(group, 'area', 'float')
+    title_info['intersection'] = self.dede(group, 'intersection', 'str')
+    title_info['microdistrict'] = self.dede(group, 'microdistrict', 'str')
     return title_info
 
   def get_others(self, soup: BeautifulSoup) -> TOthers | None:

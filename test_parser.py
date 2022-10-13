@@ -69,7 +69,7 @@ class TestViews(TestCase):
       logger.debug(title_info)
       for param_name, test_val in t['title_info'].items():
         scraper_val = title_info[param_name]
-        self.assertEqual(scraper_val, test_val, {param_name: test_val})
+        self.assertEqual(scraper_val, test_val, {param_name: test_val, 'title_info': title_info})
         logger.info(f'[OK], {test_val} == {scraper_val}')
 
   # pytest -v -s test_parser.py::TestViews::test_offer_short_description
