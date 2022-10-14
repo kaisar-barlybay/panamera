@@ -124,6 +124,178 @@ test_cases: dict[str, TTestcase] = {
 
         },
     },
+    
+    
+    
+    # Arailym
+    'https://krisha.kz/a/show/678978706': { #1
+        'title_info': {
+            'room_count': 4,
+            'floor': 4,
+            'area': 109,
+            'max_floor': 10,
+            'street': 'Кенесары хана',
+            'house_number': '54/38',
+        },
+        'offer_short_description': {
+            'building_type': 'монолитный',
+            'floor': 4,
+            'max_floor': 10,
+            'city': 'Алматы',
+            'district': 'Наурызбайский',
+            'general_area': 109,
+            'condition': 'хорошее',
+            'residential_complex': 'Хан Тенгри',
+            'build_year': 2013,
+        },
+        'offer_description': {
+            'bathroom': '2 с/у и более',
+            'balcony': 'балкон и лоджия',
+            'is_balcony_glazed': True,
+            'door': 'металлическая',
+            'internet': 'ADSL',
+            'floor_type': 'паркет',
+            'ceiling_height': 2.8,
+            'security': True,
+            'former_hostel': False,
+            'exchange_possible': 'Не интересует',
+        },
+        'others': {
+            'living_area': 109,
+        },
+        'others2': {
+            
+            'images_count': 29,
+        },
+    },
+    'https://krisha.kz/a/show/678631102': { #2
+        'title_info': {
+            'room_count': 3,
+            'floor': 2,
+            'area': 159.4,
+            'max_floor': 6,
+            'street': 'Жамбыла',
+            'house_number': '75',
+        },
+        'offer_short_description': {
+            'building_type': 'панельный',
+            'floor': 2,
+            'max_floor': 6,
+            'city': 'Алматы',
+            'district': 'Алмалинский',
+            'general_area': 159.4,
+            'build_year': 2002,
+        },
+        'offer_description': {
+            
+            'is_balcony_glazed': True,
+            'door': 'металлическая',
+            'parking': 'паркинг',
+            'floor_type': 'паркет',
+            'ceiling_height': 3,
+            'former_hostel': False,
+            'exchange_possible': 'Возможен обмен',
+        },
+        'others': {
+            'living_area': 159.4,
+        },
+        'others2': {
+            #'mortgaged': False,
+            #'mortgage': False,
+            #'installment': False,
+            #'private_hostel': False,
+            'images_count': 15,
+        },
+    },
+    'https://krisha.kz/a/show/678217538': { #3
+        'title_info': {
+            'room_count': 3,
+            'floor': 2,
+            'area': 119.4,
+            'max_floor': 3,
+            'street': 'Искендерова',
+            'house_number': '23',
+        },
+        'offer_short_description': {
+            'building_type': 'монолитный',
+            'floor': 2,
+            'max_floor': 3,
+            'city': 'Алматы',
+            'district': 'Бостандыкский',
+            'general_area': 119.4,
+            'condition': 'хорошее',
+            'residential_complex': 'Ideal Residence',
+            'build_year': 2018,
+        },
+        'offer_description': {
+            'bathroom': '2 с/у и более',
+            #'balcony': 'балкон',
+            #'is_balcony_glazed': True,
+            'door': 'металлическая',
+            'internet': 'оптика',
+            'parking': 'паркинг',
+            'furniture': 'полностью',
+            'floor_type': 'ламинат',
+            'ceiling_height': 3,
+            # bools
+            'security': True,
+            'entry_phone': True,
+            'video_security': True,
+            # oths
+            'former_hostel': False,
+            'exchange_possible': 'Не интересует',
+        },
+        'others': {
+            'living_area': 119.4,
+        },
+        'others2': {
+            #'mortgaged': False,
+            #'mortgage': False,
+            #'installment': False,
+            #'private_hostel': False,
+            'images_count': 23,
+        },
+    },
+    'https://krisha.kz/a/show/679446203': { #4
+        'title_info': {
+            'room_count': 2,
+            'floor': 2,
+            'area': 40,
+            'max_floor': 2,
+            'street': 'Суюнбая',
+            'house_number': '292',
+        },
+        'offer_short_description': {
+            'building_type': 'кирпичный',
+            'floor': 2,
+            'max_floor': 2,
+            'city': 'Алматы',
+            'district': 'Турксибский',
+            'general_area': 40,
+            'condition': 'хорошее',
+            'build_year': 1970,
+        },
+        'offer_description': {
+            'internet': 'проводной',
+            'parking': 'гараж',
+            'floor_type': 'линолеум',
+            'security': True,
+            'former_hostel': False,
+            'exchange_possible': 'Не интересует',
+        },
+        'others': {
+            'living_area': 40,
+        },
+        'others2': {
+            #'mortgaged': False,
+            #'mortgage': False,
+            #'installment': False,
+            #'private_hostel': False,
+            'images_count': 25,
+        },
+    },
+
+    
     # Shynar
     'https://krisha.kz/a/show/677715354': { #1
         'title_info': {
