@@ -313,6 +313,209 @@ test_cases: dict[str, TTestcase] = {
             'images_count': 14,
         },
     },
+    #from page = 41
+    'https://krisha.kz/a/show/675785580': {
+      'title_info': {
+            'room_count': 3,
+            'floor': 2,
+            'area': 70.5,
+            'max_floor': 8,
+            'street': 'Райымбека',
+            'house_number': '508',
+        },
+        'offer_short_description': {
+            'building_type': 'панельный',
+            'floor': 2,
+            'max_floor': 8,
+            'city': 'Алматы',
+            'district': 'Ауэзовский',
+            'general_area': 70.5,
+            'condition': 'хорошее',
+            #'residential_complex': None,
+            'build_year': 1976,
+        },
+        'offer_description': {
+            'bathroom': 'раздельный',
+            'balcony': 'лоджия',
+            'is_balcony_glazed': True,
+            'door': 'металлическая',
+            #'internet': None,
+            'parking': 'паркинг',
+            'furniture': 'частично',
+            'floor_type': 'ламинат',
+            'ceiling_height': 2.85,
+            # bools
+            'security': True,
+            'entry_phone': True,
+            'video_security': True,
+            # oths
+            'former_hostel': False,
+            #'exchange_possible': None,
+        },
+        'others': {
+            'living_area': 70.5,
+        },
+        'others2': {
+            #'mortgaged': False,
+            #'mortgage': False,
+            #'installment': False,
+            #'private_hostel': False,
+            'images_count': 10,
+        }
+    },
+    #from page = 44
+    'https://krisha.kz/a/show/677290787': {
+      'title_info': {
+            'room_count': 2,
+            'floor': 9,
+            'area': 52,
+            'max_floor': 9,
+            'street': 'Богенбай Батыра',
+            'house_number': '23/3',
+        },
+        'offer_short_description': {
+            'building_type': 'монолитный',
+            'floor': 9,
+            'max_floor': 9,
+            'city': 'Алматы',
+            'district': 'Медеуский',
+            'general_area': 52,
+            #'condition': None,
+            'residential_complex': 'На Богенбай Батыра',
+            'build_year': 2021,
+        },
+        'offer_description': {
+            'bathroom': 'совмещенный',
+            'balcony': 'несколько балконов или лоджий',
+            'is_balcony_glazed': True,
+            'door': 'металлическая',
+            #'internet': None,
+            'parking': 'паркинг',
+            #'furniture': None,
+            #'floor_type': None,
+            'ceiling_height': 2.7,
+            # bools
+            #'security': None,
+            #'entry_phone': None,
+            #'video_security': None,
+            # oths
+            'former_hostel': False,
+            'exchange_possible': 'Не интересует',
+        },
+        'others': {
+            'living_area': 52,
+        },
+        'others2': {
+            #'mortgaged': False,
+            #'mortgage': False,
+            #'installment': False,
+            #'private_hostel': False,
+            'images_count': 6,
+        },
+
+        
+
+    },
+    #from page = 50
+    'https://krisha.kz/a/show/677577731': {
+      'title_info': {
+            'room_count': 3,
+            'floor': 2,
+            'area': 71.1,
+            'max_floor': 9,
+            'street': 'Алмалинский',
+            'house_number': '167',
+        },
+        'offer_short_description': {
+            'building_type': 'панельный',
+            'floor': 2,
+            'max_floor': 9,
+            'city': 'Алматы',
+            'district': 'Алмалинский',
+            'general_area': 71.1,
+            'condition': 'хорошее',
+            #'residential_complex': None,
+            'build_year': 1988,
+        },
+        'offer_description': {
+            'bathroom': 'раздельный',
+            'balcony': 'лоджия',
+            'is_balcony_glazed': True,
+            'door': 'металлическая',
+            'internet': 'оптика',
+            #'parking': None,
+            #'furniture': None,
+            'floor_type': 'ламинат',
+            'ceiling_height': 2.8,
+            # bools
+            'security': True,
+            'entry_phone': True,
+            'video_security': True,
+            # oths
+            'former_hostel': False,
+            'exchange_possible': 'Не интересует',
+        },
+        'others': {
+            'living_area': 71.1,
+        },
+        'others2': {
+            #'mortgaged': False,
+            #'mortgage': False,
+            #'installment': False,
+            #'private_hostel': False,
+            'images_count': 22,
+        },
+    },
+    #from page = 60
+    'https://krisha.kz/a/show/679428912': {
+      'title_info': {
+            'room_count': 1,
+            'floor': 4,
+            'area': 40,
+            'max_floor': 13,
+            'street': 'Есенова',
+            'house_number': '160/3',
+        },
+        'offer_short_description': {
+            'building_type': 'монолитный',
+            'floor': 4,
+            'max_floor': 13,
+            'city': 'Алматы',
+            'district': 'Жетысуский',
+            'general_area': 40,
+            #'condition': None,
+            'residential_complex': 'Jetisu Park',
+            'build_year': 2022,
+        },
+        'offer_description': {
+            'bathroom': 'совмещенный',
+            'balcony': 'балкон и лоджия',
+            'is_balcony_glazed': True,
+            'door': 'металлическая',
+            #'internet': None,
+            'parking': 'паркинг',
+            #'furniture': None,
+            #'floor_type': None,
+            'ceiling_height': 2.8,
+            # bools
+            'security': True,
+            'entry_phone': True,
+            'video_security': True,
+            # oths
+            'former_hostel': False,
+            'exchange_possible': 'Не интересует',
+        },
+        'others': {
+            'living_area': 40,
+        },
+        'others2': {
+            #'mortgaged': False,
+            #'mortgage': False,
+            #'installment': False,
+            #'private_hostel': False,
+            'images_count': 3,
+        },
+    }
 }
 
 pats = {
