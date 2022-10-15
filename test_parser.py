@@ -79,14 +79,9 @@ class TestViews(TestCase):
       offer_short_description = self.parser.get_offer_short_description(soup)
       if offer_short_description is None:
         raise Exception
-      for param_name, (test_val, assert_type) in t['offer_short_description'].items():
-        test_val, assert_type = cast(tuple[Any, str], (test_val, assert_type))
+      for param_name, test_val in t['offer_short_description'].items():
         scraper_val = offer_short_description[param_name]
-        match assert_type:
-          case 'in':
-            self.assertIn(scraper_val, test_val, {param_name: test_val})
-          case 'equal':
-            self.assertEqual(scraper_val, test_val, {param_name: test_val})
+        self.assertEqual(scraper_val, test_val, {param_name: test_val})
         logger.info(f'[OK], {test_val} == {scraper_val}')
 
   # pytest -v -s test_parser.py::TestViews::test_offer_description
@@ -97,14 +92,9 @@ class TestViews(TestCase):
       if offer_description is None:
         raise Exception
       logger.debug(offer_description)
-      for param_name, (test_val, assert_type) in t['offer_description'].items():
-        test_val, assert_type = cast(tuple[Any, str], (test_val, assert_type))
+      for param_name, test_val in t['offer_description'].items():
         scraper_val = offer_description[param_name]
-        match assert_type:
-          case 'in':
-            self.assertIn(scraper_val, test_val, {param_name: test_val})
-          case 'equal':
-            self.assertEqual(scraper_val, test_val, {param_name: test_val})
+        self.assertEqual(scraper_val, test_val, {param_name: test_val})
         logger.info(f'[OK], {test_val} == {scraper_val}')
 
   # pytest -v -s test_parser.py::TestViews::test_others
@@ -114,14 +104,9 @@ class TestViews(TestCase):
       others = self.parser.get_others(soup)
       if others is None:
         raise Exception
-      for param_name, (test_val, assert_type) in t['others'].items():
-        test_val, assert_type = cast(tuple[Any, str], (test_val, assert_type))
+      for param_name, test_val in t['others'].items():
         scraper_val = others[param_name]
-        match assert_type:
-          case 'in':
-            self.assertIn(scraper_val, test_val, {param_name: test_val})
-          case 'equal':
-            self.assertEqual(scraper_val, test_val, {param_name: test_val})
+        self.assertEqual(scraper_val, test_val, {param_name: test_val})
         logger.info(f'[OK], {test_val} == {scraper_val}')
 
   # pytest -v -s test_parser.py::TestViews::test_others2
@@ -131,13 +116,8 @@ class TestViews(TestCase):
       others2 = self.parser.get_others2(soup)
       if others2 is None:
         raise Exception
-      for param_name, (test_val, assert_type) in t['others2'].items():
-        test_val, assert_type = cast(tuple[Any, str], (test_val, assert_type))
+      for param_name, test_val in t['others2'].items():
         scraper_val = others2[param_name]
-        match assert_type:
-          case 'in':
-            self.assertIn(scraper_val, test_val, {param_name: test_val})
-          case 'equal':
-            self.assertEqual(scraper_val, test_val, {param_name: test_val})
-            logger.info('success')
+        self.assertEqual(scraper_val, test_val, {param_name: test_val})
+
         logger.info(f'[OK], {test_val} == {scraper_val}')

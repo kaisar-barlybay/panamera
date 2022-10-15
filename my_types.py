@@ -20,8 +20,9 @@ class TParams(TypedDict, total=False):
   floor: int | None
   residential_complex: str | None
   max_floor: int | None
-  general_area: float | None
   bathroom: str | None
+  # 51.8 м², жилая — 49.7 м², Площадь кухни — 9 м²
+  general_area: float | None
   living_area: float | None
   kitchen_area: float | None
   condition: str | None
@@ -70,13 +71,13 @@ class TParams(TypedDict, total=False):
 
 class TTitleInfo(TypedDict, total=False):
   room_count: int
-  max_floor: int
   floor: int
-  area: float
-  microdistrict: str
+  max_floor: int
   street: str
   house_number: str
+  general_area: float
   intersection: str
+  microdistrict: str
 
 
 class TOfferDescription(TypedDict, total=False):
@@ -197,55 +198,57 @@ dtypes = {
 }
 
 
-class TTTitleInfo(TypedDict, total=False):
+class TestCaseTitleInfo(TypedDict, total=False):
   room_count: int
-  microdistrict: str
+  floor: int
+  max_floor: int
   street: str
   house_number: str
+  microdistrict: str
   intersection: str
 
 
-class TTOfferShortDescription(TypedDict, total=False):
+class TestCaseOfferShortDescription(TypedDict, total=False):
   building_type: str
   floor: int
   max_floor: int
+  general_area: float
+  kitchen_area: float
+  living_area: float
+  condition: str
+  build_year: int
+  residential_complex: str
   city: str
   district: str
-  general_area: float
-  condition: str
-  residential_complex: str
-  build_year: int
 
 
-class TTOfferDescription(TypedDict, total=False):
-  bathroom: str
+class TestCaseOfferDescription(TypedDict, total=False):
+  telephone: str  # Телефон: есть возможность подключения
+  internet: str
   balcony: str
+  bathroom: str
   is_balcony_glazed: bool
   door: str
   living_area: float
-  internet: str
   parking: str
   furniture: str
   floor_type: str
+  former_hostel: bool  # бывшее общежитие
   ceiling_height: float
   # security
+  bars_on_the_window: bool  # решетки на окнах
   security: bool  # охрана
   entry_phone: bool  # домофон
+  code_lock: bool  # кодовый замок
+  alarm: bool  # сигнализация
   video_security: bool  # видеонаблюдение
+  video_entry_phone: bool  # видеодомофон
+  concierge: bool  # консьерж
   # oths
-  former_hostel: bool  # бывшее общежитие
-  exchange_possible: str  # обмен возможен
-  # # ?
-  # video_entry_phone: bool
-  # kitchen_area: float
-  # telephone: str
-  # bars_on_the_window: bool
-  # code_lock: bool
-  # alarm: bool
-  # concierge: bool
+  exchange_possible: str  # Возможен обмен
 
 
-class TTOthers(TypedDict, total=False):
+class TestCaseOthers(TypedDict, total=False):
   plastic_windows: bool
   non_angular: bool
   improved: bool
@@ -260,7 +263,7 @@ class TTOthers(TypedDict, total=False):
   commercial_convenient: bool
 
 
-class TTOthers2(TypedDict, total=False):
+class TestCaseTOthers2(TypedDict, total=False):
   installment: bool
   mortgage: bool
   price: int
@@ -271,8 +274,8 @@ class TTOthers2(TypedDict, total=False):
 
 
 class TTestcase(TypedDict, total=False):
-  title_info: TTTitleInfo
-  offer_short_description: TTOfferShortDescription
-  offer_description: TTOfferDescription
-  others: TTOthers
-  others2: TTOthers2
+  title_info: TestCaseTitleInfo
+  offer_short_description: TestCaseOfferShortDescription
+  offer_description: TestCaseOfferDescription
+  others: TestCaseOthers
+  others2: TestCaseTOthers2

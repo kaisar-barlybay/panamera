@@ -144,7 +144,7 @@ class Parser:
     else:
       return False
 
-  def dede(self, d: dict, name: str, t: Literal['str', 'float', 'int']) -> Any:
+  def unpack(self, d: dict, name: str, t: Literal['str', 'float', 'int']) -> Any:
     d_str = d.get(name)
     if d_str is not None:
       match t:
@@ -169,14 +169,14 @@ class Parser:
     logger.debug(f'[{repr(text)}]')
     group = self.match_group(patterns['title_info'][0], text)
 
-    title_info['room_count'] = self.dede(group, 'room_count', 'int')
-    title_info['floor'] = self.dede(group, 'floor', 'int')
-    title_info['max_floor'] = self.dede(group, 'max_floor', 'int')
-    title_info['street'] = self.dede(group, 'street', 'str')
-    title_info['house_number'] = self.dede(group, 'house_number', 'str')
-    title_info['area'] = self.dede(group, 'area', 'float')
-    title_info['intersection'] = self.dede(group, 'intersection', 'str')
-    title_info['microdistrict'] = self.dede(group, 'microdistrict', 'str')
+    title_info['room_count'] = self.unpack(group, 'room_count', 'int')
+    title_info['floor'] = self.unpack(group, 'floor', 'int')
+    title_info['max_floor'] = self.unpack(group, 'max_floor', 'int')
+    title_info['street'] = self.unpack(group, 'street', 'str')
+    title_info['house_number'] = self.unpack(group, 'house_number', 'str')
+    title_info['general_area'] = self.unpack(group, 'general_area', 'float')
+    title_info['intersection'] = self.unpack(group, 'intersection', 'str')
+    title_info['microdistrict'] = self.unpack(group, 'microdistrict', 'str')
     return title_info
 
   def get_others(self, soup: BeautifulSoup) -> TOthers | None:
@@ -275,6 +275,7 @@ class Parser:
     return d
 
   def match_group(self, pattern: str, text: str) -> dict:
+    logger.debug((pattern, text))
     match = re.match(pattern, text)
     if match is not None:
       return self.denonify(match.groupdict())
@@ -308,19 +309,22 @@ class Parser:
             offer_short_description['floor'] = int(d['floor'])
             offer_short_description['max_floor'] = int(d['max_floor'])
         case 'Площадь, м²':
-          group = self.match_group(r"(?P<general_area>\d+) м²", val)
-          # "Алматы, Наурызбайский р-н"
-          offer_short_description['general_area'] = float(group['general_area'])
+          group = self.match_group(patterns['general_area'][0], val)
+          offer_short_description['general_area'] = self.unpack(group, 'general_area', 'float')
+          offer_short_description['living_area'] = self.unpack(group, 'living_area', 'float')
+          offer_short_description['kitchen_area'] = self.unpack(group, 'kitchen_area', 'float')
         case 'Состояние':
           offer_short_description['condition'] = val
+        case 'Санузел':
+          offer_short_description['bathroom'] = val
         case 'Год постройки':
           offer_short_description['build_year'] = int(val)
         case 'Жилой комплекс':
           offer_short_description['residential_complex'] = val
         case 'Город':
-          group = self.match_group(patterns['city'], val)
-          offer_short_description['city'] = group['city']
-          offer_short_description['district'] = group['district']
+          group = self.match_group(patterns['city'][0], val)
+          offer_short_description['city'] = self.unpack(group, 'city', 'str')
+          offer_short_description['district'] = self.unpack(group, 'district', 'str')
         case _:
           logger.debug(f'{key} - {val}')
 
@@ -340,9 +344,10 @@ class Parser:
         'former_hostel': {'title_pattern': r'Бывшее общежитие', },
         'ceiling_height': {'title_pattern': r'Потолки', },
         'security': {'title_pattern': r'Безопасность', },
+        'exchange_possible': {'title_pattern': r'Возможен обмен', },
         # 'internet': {'title_pattern': r'Санузел', },
     }
-    offer_short_description = {
+    offer_description = {
         'telephone': None,
         'internet': None,
         'balcony': None,
@@ -372,48 +377,50 @@ class Parser:
             value = soup.select_one(selector2).getText().strip()
             match param:
               case 'telephone':
-                offer_short_description['telephone'] = value
+                offer_description['telephone'] = value
               case 'internet':
-                offer_short_description['internet'] = value
+                offer_description['internet'] = value
               case 'balcony':
-                offer_short_description['balcony'] = value
+                offer_description['balcony'] = value
               case 'is_balcony_glazed':
-                offer_short_description['is_balcony_glazed'] = value == 'да'
+                offer_description['is_balcony_glazed'] = value == 'да'
               case 'door':
-                offer_short_description['door'] = value
+                offer_description['door'] = value
               case 'bathroom':
-                offer_short_description['bathroom'] = value
+                offer_description['bathroom'] = value
               case 'parking':
-                offer_short_description['parking'] = value
+                offer_description['parking'] = value
               case 'furniture':
-                offer_short_description['furniture'] = value
+                offer_description['furniture'] = value
               case 'floor_type':
-                offer_short_description['floor_type'] = value
+                offer_description['floor_type'] = value
               case 'former_hostel':
-                offer_short_description['former_hostel'] = value == 'да'
+                offer_description['former_hostel'] = value == 'да'
               case 'ceiling_height':
                 val = re.match(r'(?P<ceiling_height>\d+\.?\d*) м', value)
-                offer_short_description['ceiling_height'] = float(val['ceiling_height'])
+                offer_description['ceiling_height'] = float(val['ceiling_height'])
+              case 'exchange_possible':
+                offer_description['exchange_possible'] = value
               case 'security':
                 vals = value.split(', ')
                 for val in vals:
                   match val:
                     case 'решетки на окнах':
-                      offer_short_description['bars_on_the_window'] = True
+                      offer_description['bars_on_the_window'] = True
                     case 'охрана':
-                      offer_short_description['security'] = True
+                      offer_description['security'] = True
                     case 'домофон':
-                      offer_short_description['entry_phone'] = True
+                      offer_description['entry_phone'] = True
                     case 'кодовый замок':
-                      offer_short_description['code_lock'] = True
+                      offer_description['code_lock'] = True
                     case 'сигнализация':
-                      offer_short_description['alarm'] = True
+                      offer_description['alarm'] = True
                     case 'видеонаблюдение':
-                      offer_short_description['video_security'] = True
+                      offer_description['video_security'] = True
                     case 'видеодомофон':
-                      offer_short_description['video_entry_phone'] = True
+                      offer_description['video_entry_phone'] = True
                     case 'консьерж':
-                      offer_short_description['concierge'] = True
+                      offer_description['concierge'] = True
                     case _:
                       pass
               case _:
@@ -422,7 +429,7 @@ class Parser:
           continue
     # 45 м², кухня — 6 м²
 
-    return offer_short_description
+    return offer_description
 
   def get_installment_mortgage(self, soup: BeautifulSoup) -> tuple[bool, bool]:
 
