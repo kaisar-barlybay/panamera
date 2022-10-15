@@ -199,8 +199,6 @@ test_cases: dict[str, TTestcase] = {
         },
     },
 
-
-
     # Arailym
     'https://krisha.kz/a/show/678978706': {  # 1
         'title_info': {
@@ -367,7 +365,6 @@ test_cases: dict[str, TTestcase] = {
             'images_count': 25,
         },
     },
-
 
     # Shynar
     'https://krisha.kz/a/show/677715354': {  # 1

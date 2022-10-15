@@ -72,6 +72,7 @@ class TestViews(TestCase):
         self.assertEqual(scraper_val, test_val, {param_name: test_val, 'title_info': title_info})
         logger.info(f'[OK], {test_val} == {scraper_val}')
 
+  # Kaisar
   # pytest -v -s test_parser.py::TestViews::test_offer_short_description
   def test_offer_short_description(self) -> None:
     for uri, t in test_cases.items():
@@ -84,6 +85,7 @@ class TestViews(TestCase):
         self.assertEqual(scraper_val, test_val, {param_name: test_val})
         logger.info(f'[OK], {test_val} == {scraper_val}')
 
+  # Shynar
   # pytest -v -s test_parser.py::TestViews::test_offer_description
   def test_offer_description(self) -> None:
     for uri, t in test_cases.items():
@@ -97,6 +99,7 @@ class TestViews(TestCase):
         self.assertEqual(scraper_val, test_val, {param_name: test_val})
         logger.info(f'[OK], {test_val} == {scraper_val}')
 
+  #
   # pytest -v -s test_parser.py::TestViews::test_others
   def test_others(self) -> None:
     for uri, t in test_cases.items():
@@ -109,6 +112,7 @@ class TestViews(TestCase):
         self.assertEqual(scraper_val, test_val, {param_name: test_val})
         logger.info(f'[OK], {test_val} == {scraper_val}')
 
+  #
   # pytest -v -s test_parser.py::TestViews::test_others2
   def test_others2(self) -> None:
     for uri, t in test_cases.items():

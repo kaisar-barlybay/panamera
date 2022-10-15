@@ -179,6 +179,7 @@ class Parser:
     title_info['microdistrict'] = self.unpack(group, 'microdistrict', 'str')
     return title_info
 
+  # Kaisar
   def get_others(self, soup: BeautifulSoup) -> TOthers | None:
     others: TOthers = {}
     selector = 'div.offer__description > div.text > div.a-options-text.a-text-white-spaces'
@@ -282,6 +283,7 @@ class Parser:
     else:
       return {}
 
+  # Araylym
   def get_offer_short_description(self, soup: BeautifulSoup) -> TOfferShortDescription | None:
     offer_short_description: TOfferShortDescription = {}
     block_selector = 'div.offer__info-item'
@@ -330,6 +332,7 @@ class Parser:
 
     return offer_short_description
 
+  # Olzhas
   def get_offer_description(self, soup: BeautifulSoup) -> TOfferDescription | None:
     patterns: dict[str, dict[Literal['title_pattern'], str]] = {
         'telephone': {'title_pattern': r'Телефон', },
@@ -494,20 +497,12 @@ class Parser:
 
     return params
 
+  # Shynar
   def get_others2(self, soup) -> TOthers2:
     others2 = {}
-    installment, mortgage = self.get_installment_mortgage(soup)
-    others2['installment'] = installment
-    others2['mortgage'] = mortgage
-
-    building_type, build_year = self.get_building_type__building_year(soup)
-    others2['building_type'] = building_type
-    # params['build_year'] = build_year
-
     others2['price'] = self.get_price(soup)
     others2['mortgaged'] = self.get_mortgaged(soup)
     others2['images_count'] = self.get_images_count(soup)
     others2['private_hostel'] = self.get_private_hostel(soup)
-    others2['city'] = self.get_city(soup)
     others2['text'] = self.get_text(soup)
     return others2
