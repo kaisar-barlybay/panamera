@@ -228,12 +228,10 @@ test_cases: dict[str, TTestcase] = {
             'internet': 'ADSL',
             'floor_type': 'паркет',
             'ceiling_height': 2.8,
-            'security': True,
             'former_hostel': False,
             'exchange_possible': 'Не интересует',
         },
         'others': {
-            'living_area': 109,
         },
         'others2': {
             'images_count': 29,
@@ -268,7 +266,6 @@ test_cases: dict[str, TTestcase] = {
             'exchange_possible': 'Возможен обмен',
         },
         'others': {
-            'living_area': 159.4,
         },
         'others2': {
             # 'mortgaged': False,
@@ -317,7 +314,6 @@ test_cases: dict[str, TTestcase] = {
             'exchange_possible': 'Не интересует',
         },
         'others': {
-            'living_area': 119.4,
         },
         'others2': {
             # 'mortgaged': False,
@@ -334,7 +330,7 @@ test_cases: dict[str, TTestcase] = {
             'general_area': 40,
             'max_floor': 2,
             'street': 'Суюнбая',
-            'house_number': '292',
+            'house_number': '292-ж',
         },
         'offer_short_description': {
             'building_type': 'кирпичный',
@@ -350,18 +346,12 @@ test_cases: dict[str, TTestcase] = {
             'internet': 'проводной',
             'parking': 'гараж',
             'floor_type': 'линолеум',
-            'security': True,
             'former_hostel': False,
             'exchange_possible': 'Не интересует',
         },
         'others': {
-            'living_area': 40,
         },
         'others2': {
-            # 'mortgaged': False,
-            # 'mortgage': False,
-            # 'installment': False,
-            # 'private_hostel': False,
             'images_count': 25,
         },
     },
@@ -406,13 +396,8 @@ test_cases: dict[str, TTestcase] = {
             'exchange_possible': 'Не интересует',
         },
         'others': {
-            'living_area': 53,
         },
         'others2': {
-            # 'mortgaged': False,
-            # 'mortgage': False,
-            # 'installment': False,
-            # 'private_hostel': False,
             'images_count': 15,
         },
     },
@@ -455,13 +440,8 @@ test_cases: dict[str, TTestcase] = {
             'exchange_possible': 'Не интересует',
         },
         'others': {
-            'living_area': 188,
         },
         'others2': {
-            # 'mortgaged': False,
-            # 'mortgage': False,
-            # 'installment': False,
-            # 'private_hostel': False,
             'images_count': 28,
         },
     },
@@ -504,13 +484,8 @@ test_cases: dict[str, TTestcase] = {
             'exchange_possible': 'Возможен обмен',
         },
         'others': {
-            'living_area': 225,
         },
         'others2': {
-            # 'mortgaged': False,
-            # 'mortgage': False,
-            # 'installment': False,
-            # 'private_hostel': False,
             'images_count': 53,
         },
     },
@@ -521,7 +496,6 @@ test_cases: dict[str, TTestcase] = {
             'general_area': 45.9,
             'max_floor': 4,
             'street': 'Жубанова',
-            'house_number': '196/1',
         },
         'offer_short_description': {
             'building_type': 'панельный',
@@ -531,11 +505,11 @@ test_cases: dict[str, TTestcase] = {
             'district': 'Ауэзовский',
             'general_area': 45.9,
             'condition': 'хорошее',
+            'bathroom': 'раздельный',
             # 'residential_complex': 'Medeu City',
             'build_year': 1971,
         },
         'offer_description': {
-            'bathroom': 'раздельный',
             'balcony': 'балкон',
             'is_balcony_glazed': True,
             'parking': 'рядом охраняемая стоянка',
@@ -545,7 +519,6 @@ test_cases: dict[str, TTestcase] = {
             'exchange_possible': 'Не интересует',
         },
         'others': {
-            'living_area': 45.9,
         },
         'others2': {
             # 'mortgaged': False,
@@ -573,11 +546,11 @@ test_cases: dict[str, TTestcase] = {
             'district': 'Ауэзовский',
             'general_area': 70.5,
             'condition': 'хорошее',
+            'bathroom': 'раздельный',
             # 'residential_complex': None,
             'build_year': 1976,
         },
         'offer_description': {
-            'bathroom': 'раздельный',
             'balcony': 'лоджия',
             'is_balcony_glazed': True,
             'door': 'металлическая',
@@ -587,7 +560,6 @@ test_cases: dict[str, TTestcase] = {
             'floor_type': 'ламинат',
             'ceiling_height': 2.85,
             # bools
-            'security': True,
             'entry_phone': True,
             'video_security': True,
             # oths
@@ -595,13 +567,8 @@ test_cases: dict[str, TTestcase] = {
             # 'exchange_possible': None,
         },
         'others': {
-            'living_area': 70.5,
         },
         'others2': {
-            # 'mortgaged': False,
-            # 'mortgage': False,
-            # 'installment': False,
-            # 'private_hostel': False,
             'images_count': 10,
         }
     },
@@ -624,12 +591,11 @@ test_cases: dict[str, TTestcase] = {
             'general_area': 52,
             # 'condition': None,
             'residential_complex': 'На Богенбай Батыра',
+            'bathroom': 'совмещенный',
             'build_year': 2021,
         },
         'offer_description': {
-            'bathroom': 'совмещенный',
             'balcony': 'несколько балконов или лоджий',
-            'is_balcony_glazed': True,
             'door': 'металлическая',
             # 'internet': None,
             'parking': 'паркинг',
@@ -645,13 +611,8 @@ test_cases: dict[str, TTestcase] = {
             'exchange_possible': 'Не интересует',
         },
         'others': {
-            'living_area': 52,
         },
         'others2': {
-            # 'mortgaged': False,
-            # 'mortgage': False,
-            # 'installment': False,
-            # 'private_hostel': False,
             'images_count': 6,
         },
 
@@ -677,10 +638,10 @@ test_cases: dict[str, TTestcase] = {
             'general_area': 71.1,
             'condition': 'хорошее',
             # 'residential_complex': None,
+            'bathroom': 'раздельный',
             'build_year': 1988,
         },
         'offer_description': {
-            'bathroom': 'раздельный',
             'balcony': 'лоджия',
             'is_balcony_glazed': True,
             'door': 'металлическая',
@@ -690,7 +651,6 @@ test_cases: dict[str, TTestcase] = {
             'floor_type': 'ламинат',
             'ceiling_height': 2.8,
             # bools
-            'security': True,
             'entry_phone': True,
             'video_security': True,
             # oths
@@ -698,13 +658,8 @@ test_cases: dict[str, TTestcase] = {
             'exchange_possible': 'Не интересует',
         },
         'others': {
-            'living_area': 71.1,
         },
         'others2': {
-            # 'mortgaged': False,
-            # 'mortgage': False,
-            # 'installment': False,
-            # 'private_hostel': False,
             'images_count': 22,
         },
     },
@@ -727,10 +682,10 @@ test_cases: dict[str, TTestcase] = {
             'general_area': 40,
             # 'condition': None,
             'residential_complex': 'Jetisu Park',
+            'bathroom': 'совмещенный',
             'build_year': 2022,
         },
         'offer_description': {
-            'bathroom': 'совмещенный',
             'balcony': 'балкон и лоджия',
             'is_balcony_glazed': True,
             'door': 'металлическая',
@@ -748,13 +703,8 @@ test_cases: dict[str, TTestcase] = {
             'exchange_possible': 'Не интересует',
         },
         'others': {
-            'living_area': 40,
         },
         'others2': {
-            # 'mortgaged': False,
-            # 'mortgage': False,
-            # 'installment': False,
-            # 'private_hostel': False,
             'images_count': 3,
         },
     }
@@ -762,8 +712,8 @@ test_cases: dict[str, TTestcase] = {
 
 pats = {
     'street': r'(?P<street>[а-яА-Я0-9]{1,}(-й мкр)?(\s[а-яА-Я]+){0,})',
-    'house_number': r' (?P<house_number>(\d)+(\/?\w*)*[а-яА-Я]*)',
-    'microdistrict': r'мкр (?P<microdistrict>[а-яА-Я№0-9]{1,})',
+    'house_number': r' (?P<house_number>(\d)+([-\/]?\w*)*[а-яА-Я]*)',
+    'microdistrict': r'мкр (?P<microdistrict>(\s?[а-яА-Я№\-0-9]){1,})',
     'intersection': r' — (?P<intersection>[а-яА-Я]{1,}(\s[а-яА-Я]+){0,})',
 }
 
@@ -811,6 +761,9 @@ patterns: dict[str, tuple[str, list[tuple[str, dict]]]] = {
         (' 47А', {
             'house_number': '47А'
         }),
+        (' 292-ж', {
+            'house_number': '292-ж'
+        }),
     ]),
     'intersection': (pats['intersection'], [
         (' — Ауэзова', {
@@ -830,9 +783,9 @@ patterns: dict[str, tuple[str, list[tuple[str, dict]]]] = {
         ('мкр Кулагер', {
             'microdistrict': 'Кулагер'
         }),
-        # (' — Кенесары хана', {
-        #     'intersection': 'Кенесары хана'
-        # }),
+        ('мкр 13-й военный городок', {
+            'microdistrict': '13-й военный городок'
+        }),
     ]),
     'title_info': ((
         r'(?P<room_count>\d+)-комнатная квартира' +
@@ -859,6 +812,8 @@ patterns: dict[str, tuple[str, list[tuple[str, dict]]]] = {
          test_cases['https://krisha.kz/a/show/27290921']['title_info']),
         ('2-комнатная квартира, 51.8 м², 4/5 этаж, мкр Кулагер, Мукатая Беспакова — Омарова',
          test_cases['https://krisha.kz/a/show/676253177']['title_info']),
+        ('2-комнатная квартира, 40 м², 2/2 этаж, мкр 13-й военный городок, Суюнбая 292-ж',
+         test_cases['https://krisha.kz/a/show/679446203']['title_info']),
         # ('1-комнатная квартира, 35 м², 1/5 этаж, Мынбаева 47А — Ауэзова',
         #  test_cases['https://krisha.kz/a/show/679286505']['title_info']
         #  )

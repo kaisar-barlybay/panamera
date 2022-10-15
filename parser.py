@@ -283,7 +283,7 @@ class Parser:
     else:
       return {}
 
-  # Araylym
+  # Arailym
   def get_offer_short_description(self, soup: BeautifulSoup) -> TOfferShortDescription | None:
     offer_short_description: TOfferShortDescription = {}
     block_selector = 'div.offer__info-item'
@@ -472,7 +472,7 @@ class Parser:
           d1[k] = v
     return d1
 
-  def scrape(self, uri: str) -> dict:
+  def scrape(self, uri: str) -> dict[str, float | int | str | None]:
     logger.info(f"Scraping uri: {uri}")
     soup = self.get_soup(uri)
     # logger.debug(soup)
