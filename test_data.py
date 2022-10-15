@@ -40,7 +40,7 @@ test_cases: dict[str, TTestcase] = {
             'video_security': True,
             # oths
             'former_hostel': False,
-            'exchange_possible': 'Не интересует',
+            'exchange_possible': False,
         },
         'others': {
             'plastic_windows': True,
@@ -88,7 +88,7 @@ test_cases: dict[str, TTestcase] = {
             'floor_type': 'линолеум',
             'ceiling_height': 2.6,
             'former_hostel': False,
-            'exchange_possible': 'Не интересует',
+            'exchange_possible': False,
         },
         'others': {
             'plastic_windows': True,
@@ -117,6 +117,7 @@ test_cases: dict[str, TTestcase] = {
             'floor': 4,
             'max_floor': 9,
             'general_area': 90,
+            'building_type': 'монолитный',
             'bathroom': '2 с/у и более',
             'build_year': 2017,
             'residential_complex': 'Park House',
@@ -159,11 +160,11 @@ test_cases: dict[str, TTestcase] = {
             'max_floor': 5,
             'microdistrict': 'Кулагер',
             'street': 'Мукатая Беспакова',
-            # 'house_number': None,
             'intersection': 'Омарова',
         },
         'offer_short_description': {
             'floor': 4,
+            'building_type': 'кирпичный',
             'max_floor': 5,
             'general_area': 51.8,
             'living_area': 49.7,
@@ -229,7 +230,7 @@ test_cases: dict[str, TTestcase] = {
             'floor_type': 'паркет',
             'ceiling_height': 2.8,
             'former_hostel': False,
-            'exchange_possible': 'Не интересует',
+            'exchange_possible': False,
         },
         'others': {
         },
@@ -263,15 +264,11 @@ test_cases: dict[str, TTestcase] = {
             'floor_type': 'паркет',
             'ceiling_height': 3,
             'former_hostel': False,
-            'exchange_possible': 'Возможен обмен',
+            'exchange_possible': True,
         },
         'others': {
         },
         'others2': {
-            # 'mortgaged': False,
-            # 'mortgage': False,
-            # 'installment': False,
-            # 'private_hostel': False,
             'images_count': 15,
         },
     },
@@ -311,15 +308,11 @@ test_cases: dict[str, TTestcase] = {
             'video_security': True,
             # oths
             'former_hostel': False,
-            'exchange_possible': 'Не интересует',
+            'exchange_possible': False,
         },
         'others': {
         },
         'others2': {
-            # 'mortgaged': False,
-            # 'mortgage': False,
-            # 'installment': False,
-            # 'private_hostel': False,
             'images_count': 23,
         },
     },
@@ -347,12 +340,12 @@ test_cases: dict[str, TTestcase] = {
             'parking': 'гараж',
             'floor_type': 'линолеум',
             'former_hostel': False,
-            'exchange_possible': 'Не интересует',
+            'exchange_possible': False,
         },
         'others': {
         },
         'others2': {
-            'images_count': 25,
+            'images_count': 28,
         },
     },
 
@@ -379,8 +372,6 @@ test_cases: dict[str, TTestcase] = {
         },
         'offer_description': {
             'bathroom': 'совмещенный',
-            # 'balcony': 'несколько балконов или лоджий',
-            # 'is_balcony_glazed': True,
             'door': 'металлическая',
             'internet': 'ADSL',
             'parking': 'паркинг',
@@ -393,7 +384,7 @@ test_cases: dict[str, TTestcase] = {
             # 'video_security': True,
             # oths
             'former_hostel': False,
-            'exchange_possible': 'Не интересует',
+            'exchange_possible': False,
         },
         'others': {
         },
@@ -422,13 +413,11 @@ test_cases: dict[str, TTestcase] = {
             'build_year': 2017,
         },
         'offer_description': {
-            # 'bathroom': 'совмещенный',
             'balcony': 'балкон',
             'is_balcony_glazed': True,
             'door': 'бронированная',
             'internet': 'оптика',
             'parking': 'рядом охраняемая стоянка',
-            # 'furniture': 'полностью',
             'floor_type': 'паркет',
             'ceiling_height': 3.35,
             # bools
@@ -437,7 +426,7 @@ test_cases: dict[str, TTestcase] = {
             'video_security': True,
             # oths
             'former_hostel': False,
-            'exchange_possible': 'Не интересует',
+            'exchange_possible': False,
         },
         'others': {
         },
@@ -466,22 +455,16 @@ test_cases: dict[str, TTestcase] = {
             'build_year': 2015,
         },
         'offer_description': {
-            # 'bathroom': 'совмещенный',
             'balcony': 'балкон',
-            # 'is_balcony_glazed': True,
             'door': 'металлическая',
             'internet': 'ADSL',
-            # 'parking': 'паркинг',
-            # 'furniture': 'полностью',
-            # 'floor_type': 'ламинат',
             'ceiling_height': 3,
             # bools
             'security': True,
             'entry_phone': True,
-            # 'video_security': True,
             # oths
             'former_hostel': False,
-            'exchange_possible': 'Возможен обмен',
+            'exchange_possible': True,
         },
         'others': {
         },
@@ -516,15 +499,11 @@ test_cases: dict[str, TTestcase] = {
             # bools
             # oths
             'former_hostel': False,
-            'exchange_possible': 'Не интересует',
+            'exchange_possible': False,
         },
         'others': {
         },
         'others2': {
-            # 'mortgaged': False,
-            # 'mortgage': False,
-            # 'installment': False,
-            # 'private_hostel': False,
             'images_count': 14,
         },
     },
@@ -608,7 +587,7 @@ test_cases: dict[str, TTestcase] = {
             # 'video_security': None,
             # oths
             'former_hostel': False,
-            'exchange_possible': 'Не интересует',
+            'exchange_possible': False,
         },
         'others': {
         },
@@ -655,7 +634,7 @@ test_cases: dict[str, TTestcase] = {
             'video_security': True,
             # oths
             'former_hostel': False,
-            'exchange_possible': 'Не интересует',
+            'exchange_possible': False,
         },
         'others': {
         },
@@ -700,7 +679,7 @@ test_cases: dict[str, TTestcase] = {
             'video_security': True,
             # oths
             'former_hostel': False,
-            'exchange_possible': 'Не интересует',
+            'exchange_possible': False,
         },
         'others': {
         },

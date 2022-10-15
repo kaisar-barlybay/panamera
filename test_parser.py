@@ -1,5 +1,5 @@
-from typing import Any, cast
-from my_types import TTestcase
+from typing import Any, Generator, cast
+import numpy as np
 from parser import Parser
 from unittest import TestCase
 from test_data import test_cases, patterns
@@ -13,8 +13,75 @@ class TestViews(TestCase):
     super().__init__(methodName)
     self.parser = Parser()  # type: ignore
 
+  def get_val(self, d: dict, cn: str) -> Any:
+    try:
+      np.isnan(d.get(cn))
+      return None
+    except TypeError:
+      pass
+    v = d.get(cn)
+    match v:
+      case 'NaN' | 'nan':
+        return None
+      case _:
+        return v
+
+  # Kaisar
+  # pytest -v -s test_parser.py::TestViews::test_parse
+
+  def test_parse(self) -> None:
+    from_page = 1
+    to_page = 1
+    threshold = 3
+    # cases = {k: v for k, v in test_cases.items() if k == 'https://krisha.kz//a/show/674680782'}
+    cases = test_cases
+
+    def generator() -> Generator[str, None, None]:
+      i = 0
+      for uri, test_case in cases.items():
+        if i > threshold:
+          break
+        yield uri
+        i += 1
+
+    self.parser.parse(from_page, to_page, generator)
+    df = self.parser.read_csv(from_page, to_page)
+    i = 0
+    for uri, test_case in cases.items():
+      if i > threshold:
+        break
+      logger.debug(uri)
+      test_case = cast(dict[str, dict[str, Any]], test_case)
+      sub_df = df.loc[df['uri'] == uri]
+      print(sub_df.head())
+
+      if len(sub_df.index) != 1:
+        raise Exception('too many / 0 rows found!')
+      row = sub_df.iloc[0]
+
+      # true values
+      true_vals = {}
+      for group_name, group in test_case.items():
+        for param_name, true_val in group.items():
+          true_vals[param_name] = true_val
+      true_vals = self.parser.fill_na(true_vals, self.parser.dtypes)
+      # test
+      for cn in df.columns:
+        if cn not in ['uri', 'text']:
+          true_val = self.get_val(true_vals, cn)
+          scraped_val = self.get_val(row, cn)
+          self.assertEqual(true_val, scraped_val, {
+              'column_name': cn,
+              'true_val': true_val,
+              'scraped_val': scraped_val,
+              'row': row.to_dict(),
+              'true_vals': true_vals
+          })
+      i += 1
+
   # Kaisar
   # pytest -v -s test_parser.py::TestViews::test_crawl
+
   def test_crawl(self) -> None:
     for title, uri, price in self.parser.crawl(1, 100):
       logger.info((title, uri, price))

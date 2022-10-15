@@ -4,14 +4,15 @@ import re
 import logging
 import requests
 from requests import Response
-from typing import Generator, Literal, Any
+from typing import Callable, Generator, Literal, Any
 from bs4 import BeautifulSoup
 from geopy.geocoders import Nominatim  # type: ignore
 from pandas import DataFrame, Series
-from my_types import TOfferDescription, TOfferShortDescription, TOthers, TOthers2, TParams, TTitleInfo, dtypes
+from my_types import TypedOfferDescription, TOfferShortDescription, TOthers, TOthers2, TParams, TTitleInfo, dtypes, title_info_dtypes, offer_description_dtypes, offer_short_description_dtypes, others2_dtypes, others_dtypes
 from test_data import patterns
 import urllib3
 from my_types import TLoc
+import numpy as np
 logger = logging.getLogger('default')
 
 
@@ -95,10 +96,46 @@ class Parser:
     #   self.webdriver = Webdriver('tordriver', chrome_driver_path, firefox_binary_path, firefox_profile_path, geckodriver_path, True)
     self.dtypes = dtypes
 
+  def read_csv(self, from_page: int, to_page: int) -> DataFrame:
+    df = pd.read_csv(self.format_df_name(from_page, to_page))
+    # df = df.fillna(value=np.nan)
+    df.set_index('uri')
+    df = self.asd(df)
+    df.replace(to_replace=['None'], value=np.nan, inplace=True)
+    df.replace(to_replace=['True'], value=True, inplace=True)
+    df.replace(to_replace=['False'], value=False, inplace=True)
+    return df
+
+  def asd(self, df: DataFrame) -> DataFrame:
+    for column_name, dtype in self.dtypes.items():
+      logger.debug(f"{column_name}: {df[column_name].dtypes} - {dtype}")
+      match dtype:
+        case 'Int64':
+          df[column_name] = np.floor(pd.to_numeric(df[column_name], errors='coerce')).astype(dtype)
+        case _:
+          df[column_name] = df[column_name].astype(dtype)
+    return df
+
+  def format_df_name(self, from_page: int, to_page: int) -> str:
+    return f"krisha_{from_page}-{to_page}.csv"
+
+  def parse(self, from_page: int, to_page: int, generator: Generator[str, None, None]) -> None:
+    paramss = []
+    for uri in generator():
+      params = self.scrape(uri)
+      paramss.append(params)
+
+    df = pd.DataFrame(paramss, columns=list(self.dtypes.keys()))
+    df.set_index('uri')
+    df = self.asd(df)
+    df = df.fillna(value=np.nan)
+    df.to_csv(self.format_df_name(from_page, to_page), encoding='utf-8', index=False, na_rep=np.nan)
+    print(df.head)
+
   def crawl(self, from_page: int, to_page: int) -> Generator[tuple[str, str, int], None, None]:
     for i in range(from_page, to_page + 1):
-      'https://krisha.kz/prodazha/kvartiry/almaty/?das[_sys.hasphoto]=1&das[flat.priv_dorm]=2&das[house.year][from]=1970&das[who]=1&page=2'
-      url = f'https://krisha.kz/prodazha/kvartiry/almaty/?page={i}'
+      # 'https://krisha.kz/prodazha/kvartiry/almaty/?das[_sys.hasphoto]=1&das[flat.priv_dorm]=2&das[house.year][from]=1970&das[who]=1&page=2'
+      url = f'https://krisha.kz/prodazha/kvartiry/almaty/?das[_sys.hasphoto]=1&das[flat.priv_dorm]=2&das[house.year][from]=1970&das[who]=1&page={i}'
       soup = self.get_soup(url)
       main_info_selector = 'div.a-card__main-info'
       main_infos = soup.select(main_info_selector)
@@ -136,13 +173,13 @@ class Parser:
       else:
         return None
 
-  def get_mortgaged(self, soup: BeautifulSoup) -> bool:
+  def get_mortgaged(self, soup: BeautifulSoup) -> Literal[True, None]:
     selector = 'div.offer__parameters-mortgaged'
     tag = soup.select_one(selector)
     if tag is not None:
       return True
     else:
-      return False
+      return None
 
   def unpack(self, d: dict, name: str, t: Literal['str', 'float', 'int']) -> Any:
     d_str = d.get(name)
@@ -154,10 +191,22 @@ class Parser:
           return float(d_str)
         case _:
           return d_str
-    return None
+    return np.nan
+
+  def fill_na(self, d: dict, types: dict[str, Literal['bool', 'Float64', 'Int64', 'str']], for_pandas: bool = True) -> dict:
+    for param_name, t in types.items():
+      if param_name not in d:
+        match t:
+          case 'bool':
+            d[param_name] = False
+          case 'Float64' | 'Int64':
+            d[param_name] = np.nan if for_pandas is True else None
+          case 'str':
+            d[param_name] = np.nan if for_pandas is True else None
+    logger.info(d)
+    return d
 
   # Shynar
-
   def get_title_info(self, soup: BeautifulSoup) -> TTitleInfo | None:
     title_info: TTitleInfo = {}
     selector = 'div.offer__advert-title > h1'
@@ -166,7 +215,7 @@ class Parser:
       return None
     # 3-комнатная квартира, 90 м², 4/10 этаж, Кенесары хана 54/39
     text = value.getText().strip()
-    logger.debug(f'[{repr(text)}]')
+    # logger.debug(f'[{repr(text)}]')
     group = self.match_group(patterns['title_info'][0], text)
 
     title_info['room_count'] = self.unpack(group, 'room_count', 'int')
@@ -177,6 +226,7 @@ class Parser:
     title_info['general_area'] = self.unpack(group, 'general_area', 'float')
     title_info['intersection'] = self.unpack(group, 'intersection', 'str')
     title_info['microdistrict'] = self.unpack(group, 'microdistrict', 'str')
+    title_info = self.fill_na(title_info, title_info_dtypes)
     return title_info
 
   # Kaisar
@@ -218,9 +268,10 @@ class Parser:
           others['commercial_convenient'] = True
         case _:
           pass
+    others = self.fill_na(others, others_dtypes)
     return others
 
-  def get_private_hostel(self, soup: BeautifulSoup) -> bool:
+  def get_private_hostel(self, soup: BeautifulSoup) -> Literal[True, None]:
     for i in range(1, 10):
       selector1 = f'div.offer__parameters > dl:nth-child({i})'
       selector2 = f'div.offer__parameters > dl:nth-child({i}) > dd'
@@ -232,8 +283,8 @@ class Parser:
       if match2 is None:
         match3 = soup.select_one(selector2)
         if match3 is None:
-          return False
-    return False
+          return None
+    return None
 
   def get_building_type__building_year(self, soup: BeautifulSoup) -> tuple[str | None, int | None]:
     selector = 'div:nth-child(2) > div.offer__advert-short-info'
@@ -276,7 +327,6 @@ class Parser:
     return d
 
   def match_group(self, pattern: str, text: str) -> dict:
-    logger.debug((pattern, text))
     match = re.match(pattern, text)
     if match is not None:
       return self.denonify(match.groupdict())
@@ -330,55 +380,37 @@ class Parser:
         case _:
           logger.debug(f'{key} - {val}')
 
+    offer_short_description = self.fill_na(offer_short_description, offer_short_description_dtypes)
     return offer_short_description
 
   # Olzhas
-  def get_offer_description(self, soup: BeautifulSoup) -> TOfferDescription | None:
-    patterns: dict[str, dict[Literal['title_pattern'], str]] = {
-        'telephone': {'title_pattern': r'Телефон', },
-        'internet': {'title_pattern': r'Интернет', },
-        'balcony': {'title_pattern': r'Балкон$', },
-        'bathroom': {'title_pattern': r'Санузел$', },
-        'is_balcony_glazed': {'title_pattern': r'Балкон остеклён', },
-        'door': {'title_pattern': r'Дверь', },
-        'parking': {'title_pattern': r'Парковка', },
-        'furniture': {'title_pattern': r'Квартира меблирована', },
-        'floor_type': {'title_pattern': r'Пол$', },
-        'former_hostel': {'title_pattern': r'Бывшее общежитие', },
-        'ceiling_height': {'title_pattern': r'Потолки', },
-        'security': {'title_pattern': r'Безопасность', },
-        'exchange_possible': {'title_pattern': r'Возможен обмен', },
-        # 'internet': {'title_pattern': r'Санузел', },
+  def get_offer_description(self, soup: BeautifulSoup) -> TypedOfferDescription | None:
+    patterns: dict[str, str] = {
+        'telephone': r'Телефон',
+        'internet': r'Интернет',
+        'balcony': r'Балкон$',
+        'bathroom': r'Санузел$',
+        'is_balcony_glazed': r'Балкон остеклён',
+        'door': r'Дверь',
+        'parking': r'Парковка',
+        'furniture': r'Квартира меблирована',
+        'floor_type': r'Пол$',
+        'former_hostel': r'Бывшее общежитие',
+        'ceiling_height': r'Потолки',
+        'security': r'Безопасность',
+        'exchange_possible': r'Возможен обмен',
     }
-    offer_description = {
-        'telephone': None,
-        'internet': None,
-        'balcony': None,
-        'door': None,
-        'parking': None,
-        'is_balcony_glazed': None,
-        'furniture': None,
-        'floor_type': None,
-        'ceiling_height': None,
-        'bars_on_the_window': None,
-        'security': None,
-        'entry_phone': None,
-        'code_lock': None,
-        'alarm': None,
-        'video_security': None,
-        'video_entry_phone': None,
-        'concierge': None,
-    }
+    offer_description: TypedOfferDescription = {}
     for i in range(1, 20):
       selector1 = f"div.offer__description > div.offer__parameters > dl:nth-child({i}) > dt"
       selector2 = f"div.offer__description > div.offer__parameters > dl:nth-child({i}) > dd"
-      for param, params in patterns.items():
+      for param_name, pattern in patterns.items():
         try:
           title = soup.select_one(selector1).getText().strip()
-          title_match = re.match(params['title_pattern'], title)
+          title_match = re.match(pattern, title)
           if title_match:
             value = soup.select_one(selector2).getText().strip()
-            match param:
+            match param_name:
               case 'telephone':
                 offer_description['telephone'] = value
               case 'internet':
@@ -403,7 +435,7 @@ class Parser:
                 val = re.match(r'(?P<ceiling_height>\d+\.?\d*) м', value)
                 offer_description['ceiling_height'] = float(val['ceiling_height'])
               case 'exchange_possible':
-                offer_description['exchange_possible'] = value
+                offer_description['exchange_possible'] = value == 'Возможен обмен'
               case 'security':
                 vals = value.split(', ')
                 for val in vals:
@@ -430,8 +462,8 @@ class Parser:
                 pass
         except AttributeError as e:
           continue
-    # 45 м², кухня — 6 м²
 
+    offer_description = self.fill_na(offer_description, offer_description_dtypes)
     return offer_description
 
   def get_installment_mortgage(self, soup: BeautifulSoup) -> tuple[bool, bool]:
@@ -465,20 +497,19 @@ class Parser:
     image_lis = soup.select(selector)
     return len(image_lis)
 
-  def enrich(self, d1: dict, d2: dict | None) -> dict:
-    if d2 is not None:
-      for k, v in d2.items():
-        if k not in d1:
-          d1[k] = v
-    return d1
+  def enrich(self, destination: dict, source: dict | None) -> dict:
+    if source is not None:
+      for key, value in source.items():
+        if key not in destination:
+          destination[key] = value
+    return destination
 
-  def scrape(self, uri: str) -> dict[str, float | int | str | None]:
+  def scrape(self, uri: str) -> TParams:
     logger.info(f"Scraping uri: {uri}")
     soup = self.get_soup(uri)
     # logger.debug(soup)
-    params: TParams = {
-        'uri': uri,
-    }
+    params: TParams = {}
+    params['uri'] = uri
 
     title_info = self.get_title_info(soup)
     self.enrich(params, title_info)
@@ -494,7 +525,6 @@ class Parser:
 
     others2 = self.get_others2(soup)
     self.enrich(params, others2)
-
     return params
 
   # Shynar
@@ -505,4 +535,5 @@ class Parser:
     others2['images_count'] = self.get_images_count(soup)
     others2['private_hostel'] = self.get_private_hostel(soup)
     others2['text'] = self.get_text(soup)
+    others2 = self.fill_na(others2, others2_dtypes)
     return others2
