@@ -12,16 +12,17 @@ logger = get_script_logger('DEBUG')
 
 if __name__ == '__main__':
   parser = Parser()
-  # for i in range(0, 6):
-  for i in range(0, 1):
+  for i in range(46, 51):
+    # for i in range(0, 1):
     paramss = []
-    page_factor = 1
-    # page_factor = 100
-    # 1 - 2000
+    # page_factor = 1
+    page_factor = 10
     from_page = 1 + i * page_factor
-    to_page = (i+1) * page_factor
+    if i != 50:
+      to_page = (i+1) * page_factor
+    else:
+      to_page = 502
     logger.critical(f'{from_page}-{to_page}')
-    parser.parse(from_page, to_page)
 
     def generator() -> Generator[str, None, None]:
       for uri, title, price in parser.crawl(from_page, to_page):

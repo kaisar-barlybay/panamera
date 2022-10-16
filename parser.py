@@ -96,17 +96,17 @@ class Parser:
     #   self.webdriver = Webdriver('tordriver', chrome_driver_path, firefox_binary_path, firefox_profile_path, geckodriver_path, True)
     self.dtypes = dtypes
 
-  def read_csv(self, from_page: int, to_page: int) -> DataFrame:
-    df = pd.read_csv(self.format_df_name(from_page, to_page))
+  def read_csv(self, path: str) -> DataFrame:
+    df = pd.read_csv(path)
     # df = df.fillna(value=np.nan)
     df.set_index('uri')
-    df = self.asd(df)
+    df = self.format_df(df)
     df.replace(to_replace=['None'], value=np.nan, inplace=True)
     df.replace(to_replace=['True'], value=True, inplace=True)
     df.replace(to_replace=['False'], value=False, inplace=True)
     return df
 
-  def asd(self, df: DataFrame) -> DataFrame:
+  def format_df(self, df: DataFrame) -> DataFrame:
     for column_name, dtype in self.dtypes.items():
       logger.debug(f"{column_name}: {df[column_name].dtypes} - {dtype}")
       match dtype:
@@ -127,7 +127,7 @@ class Parser:
 
     df = pd.DataFrame(paramss, columns=list(self.dtypes.keys()))
     df.set_index('uri')
-    df = self.asd(df)
+    df = self.format_df(df)
     df = df.fillna(value=np.nan)
     df.to_csv(self.format_df_name(from_page, to_page), encoding='utf-8', index=False, na_rep=np.nan)
     print(df.head)

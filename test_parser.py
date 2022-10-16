@@ -45,7 +45,7 @@ class TestViews(TestCase):
         i += 1
 
     self.parser.parse(from_page, to_page, generator)
-    df = self.parser.read_csv(from_page, to_page)
+    df = self.parser.read_csv(self.parser.format_df_name(from_page, to_page))
     i = 0
     for uri, test_case in cases.items():
       if i > threshold:
