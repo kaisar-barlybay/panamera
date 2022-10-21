@@ -1,6 +1,6 @@
+from time import sleep
 from scipy.special import inv_boxcox1p
-import seaborn as sns
-import matplotlib.pyplot as plt
+from geopy.exc import GeocoderUnavailable, GeocoderServiceError
 import re
 from scipy.stats import skew
 from transliterate import translit
@@ -9,6 +9,7 @@ from scipy.special import boxcox1p
 from pandas import DataFrame, Series
 import numpy as np
 import pandas as pd
+from my_types import TLoc
 from visualizer import Visualizer
 
 
@@ -19,8 +20,8 @@ class Preprocessor:
         'max_floor',
         'floor',
         'build_year',
-        'lat',
-        'long',
+        # 'lat',
+        # 'long',
         'district',
         # 'ceiling_height',
     ]
@@ -40,7 +41,7 @@ class Preprocessor:
         'intersection',
         'house_number',
         'city',
-        'address',
+        # 'address',
     ]
     self.fill_category_columns = [
         'residential_complex',
@@ -51,7 +52,7 @@ class Preprocessor:
     self.to_drop_columns = [
         'living_area',  # too large missing value fraction => not significant
         'kitchen_area',  # too large missing value fraction => not significant
-        'address',  # don't need it anymore
+        # 'address',  # don't need it anymore
         'ceiling_height'
     ]
     self.allowed_b_types = ['монолитный', 'кирпичный', 'панельный', 'иное']
@@ -68,9 +69,10 @@ class Preprocessor:
     print(f"Dropped: {labels_to_drop} columns because of nulls\n")
 
     self.visualizer.plot_missing_data(missing_data)
-
+    print('here')
     for ncdrc in self.null_cell_drops_row_columns:
       df = df.drop(df.loc[df[ncdrc].isnull()].index)
+    print('here2')
     print(f"Dropped rows with null on {self.null_cell_drops_row_columns} columns instead of dropping whole column\n")
     return df
 
@@ -158,3 +160,60 @@ class Preprocessor:
       lam = 0.15
       serie = inv_boxcox1p(serie, lam)
     return serie
+
+  def get_address(self, row: Series) -> str:
+    city = row['city']
+    ditrict = row['district']
+    house_number = row['house_number']
+    intersection = row['intersection']
+    street = row['street']
+    add = [
+        f"{city}",
+        f", {ditrict} район" if type(ditrict) != float else '',
+        (f", {street}" if type(street) != float else ''),
+        f" {house_number}" if type(house_number) != float else '',
+        f" - {intersection}" if type(intersection) != float else '',
+    ]
+    # print(city, ditrict, house_number, intersection, street,)
+    res = ''.join(add)
+    res = re.sub(r'(\, (мкр|Мкр|Мкрн))?', '', res)
+    return res
+
+  def geoGrab(self, address: str) -> TLoc | None:
+    from geopy.geocoders import Nominatim  # type: ignore
+
+    print(f"{address=}")
+    geolocator = Nominatim(user_agent='user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36')
+    location = None
+    while location is None:
+      try:
+        location = geolocator.geocode(address)
+      except (GeocoderUnavailable, GeocoderServiceError) as e:
+        print('waiting')
+        sleep(5)
+        continue
+    if location is not None:
+      loc: TLoc = {
+          'latitude': location.latitude,
+          'longitude': location.longitude
+      }
+      return loc
+    else:
+      return None
+
+  def placeFind(self, df: DataFrame) -> DataFrame:
+    print(f'got df of size={len(df.index)}')
+    rows_list = []
+    for ind, row in df.iterrows():
+      address = self.get_address(row)
+
+      coords = self.geoGrab(address)
+      if coords is not None and 43 < coords['latitude'] < 44 and 76 < coords['longitude'] < 77:
+        rows_list.append([address, coords['latitude'], coords['longitude']])
+        print(f"{coords=}\n")
+      else:
+        rows_list.append([address, None, None])
+    df2 = pd.DataFrame(rows_list, columns=['address', 'lat', 'long'])
+    df3 = df.join(df2)
+    return df3
+    # df3.to_csv('df3.csv')

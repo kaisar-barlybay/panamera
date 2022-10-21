@@ -6,7 +6,7 @@ import requests
 from requests import Response
 from typing import Callable, Generator, Literal, Any
 from bs4 import BeautifulSoup
-from geopy.geocoders import Nominatim  # type: ignore
+
 from pandas import DataFrame, Series
 from my_types import TypedOfferDescription, TOfferShortDescription, TOthers, TOthers2, TParams, TTitleInfo, dtypes, title_info_dtypes, offer_description_dtypes, offer_short_description_dtypes, others2_dtypes, others_dtypes
 from test_data import patterns
@@ -33,56 +33,6 @@ def fetch(url: str, method: str = 'GET', params: dict = {}, data: dict = {}, str
   r.encoding = r.apparent_encoding
 
   return r
-
-
-def geoGrab(address: str) -> TLoc | None:
-
-  print(f"{address=}")
-  geolocator = Nominatim(user_agent='user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36')
-  location = geolocator.geocode(address)
-  if location is not None:
-    loc: TLoc = {
-        'latitude': location.latitude,
-        'longitude': location.longitude
-    }
-    return loc
-  else:
-    return None
-
-
-def get_address(row: Series) -> str:
-  city = row['city']
-  ditrict = row['district']
-  house_number = row['house_number']
-  intersection = row['intersection']
-  street = row['street']
-  add = [
-      f"{city}",
-      f", {ditrict} район" if type(ditrict) != float else '',
-      (f", {street}" if type(street) != float else ''),
-      f" {house_number}" if type(house_number) != float else '',
-      f" - {intersection}" if type(intersection) != float else '',
-  ]
-  # print(city, ditrict, house_number, intersection, street,)
-  res = ''.join(add)
-  res = re.sub(r'(\, (мкр|Мкр|Мкрн))?', '', res)
-  return res
-
-
-def placeFind(df: DataFrame) -> None:
-  rows_list = []
-  for ind, row in df.iterrows():
-    address = get_address(row)
-
-    coords = geoGrab(address)
-    if coords is not None and 43 < coords['latitude'] < 44 and 76 < coords['longitude'] < 77:
-      rows_list.append([address, coords['latitude'], coords['longitude']])
-      print(f"{coords=}\n")
-    else:
-      rows_list.append([address, None, None])
-  df2 = pd.DataFrame(rows_list, columns=['address', 'lat', 'long'])
-  df3 = df.join(df2)
-  df3.to_csv('df3.csv')
 
 
 class Parser:

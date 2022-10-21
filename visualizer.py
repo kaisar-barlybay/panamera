@@ -3,6 +3,7 @@ from pandas import DataFrame
 from scipy.stats import norm, probplot
 import seaborn as sns
 import pandas as pd
+from my_types import dtypes
 from sklearn.preprocessing import StandardScaler
 import numpy as np
 
@@ -55,8 +56,17 @@ class Visualizer:
     plt.show()
 
   def scatter(self, df: DataFrame, from_param: str, to_param: str = 'price') -> None:
+    print(f'Scattering {from_param} to {to_param}')
+    match dtypes[from_param]:
+      case 'str':
+        from_series = df[from_param].fillna('NaN')
+        to_series = df[to_param].fillna('NaN')
+      case _:
+        from_series = df[from_param]  # .fillna('NaN')
+        to_series = df[to_param]  # .fillna('NaN')
+
     fig, ax = plt.subplots()
-    ax.scatter(x=df[from_param], y=df[to_param])
+    ax.scatter(x=from_series, y=to_series)
     plt.ylabel(to_param, fontsize=13)
     plt.xlabel(from_param, fontsize=13)
     plt.show()
@@ -78,7 +88,7 @@ class Visualizer:
 
   def plot_missing_data(self, missing_data: DataFrame) -> None:
     f, ax = plt.subplots(figsize=(15, 12))
-    plt.xticks(rotation='90')
+    plt.xticks(rotation=90)
     sns.barplot(x=missing_data[:20].index, y=missing_data['Percent'][:20] * 100)
     plt.xlabel('Features', fontsize=15)
     plt.ylabel('Percent of missing values', fontsize=15)
