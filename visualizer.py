@@ -82,10 +82,6 @@ class Visualizer:
 
     self.histo(df, column_name)
 
-    #skewness and kurtosis
-    print(f"Skewness: {df[column_name].skew()}")
-    print(f"Kurtosis: {df[column_name].kurt()}")
-
   def plot_missing_data(self, missing_data: DataFrame) -> None:
     f, ax = plt.subplots(figsize=(15, 12))
     plt.xticks(rotation=90)

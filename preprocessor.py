@@ -69,10 +69,8 @@ class Preprocessor:
     print(f"Dropped: {labels_to_drop} columns because of nulls\n")
 
     self.visualizer.plot_missing_data(missing_data)
-    print('here')
     for ncdrc in self.null_cell_drops_row_columns:
       df = df.drop(df.loc[df[ncdrc].isnull()].index)
-    print('here2')
     print(f"Dropped rows with null on {self.null_cell_drops_row_columns} columns instead of dropping whole column\n")
     return df
 

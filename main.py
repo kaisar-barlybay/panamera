@@ -60,35 +60,35 @@ class Main():
     df = pd.concat(dfs)
     df.to_csv('df_with_geo.csv')
 
-  def analyze(self) -> None:
+  def visualize(self) -> None:
     df = self.df
-    self.visualizer.corr(df)
 
+    # Kaisar
+    df = self.preprocessor.clean(df)
+    df = self.preprocessor.missing_values(df)
+
+    # Shynar
+    df = self.preprocessor.set_category_None(df)
+    df = self.preprocessor.transliterate(df)
+    df.describe(include='all')  # must be run in jupyter notebook in separate cell
+
+    # Arailym
+    self.visualizer.corr(df)
     self.visualizer.describe_column(df, 'price')
-    self.visualizer.scatters(df)
     self.visualizer.std(df)
 
-    df = self.preprocessor.clean(df)
-    df = self.preprocessor.set_category_None(df)
+    # Olzhas
     scatter_field_names = [
         'general_area',
         'internet',
         'floor',
         'room_count',
-        # 'ceiling_height',
         'non_angular',
         'max_floor',
     ]
+    self.visualizer.scatters(df)
     for field_name in scatter_field_names:
       self.visualizer.scatter(self.df, from_param=field_name)
-
-    df = self.preprocessor.missing_values(df)
-
-    df = self.preprocessor.transform_seeds(df)
-    df = self.preprocessor.resolve_skewness(df, self.rsk)
-
-    df = self.preprocessor.transliterate(df)
-    df = self.preprocessor.get_dummies(df)
 
     self.df = df
 
@@ -131,6 +131,7 @@ if __name__ == '__main__':
 
         main.parser.parse(from_page, to_page, generator)
     case 'analyze':
-      main.analyze()
+      main.visualize()
+      # main.analyze()
     case _:
       pass
