@@ -85,6 +85,7 @@ class Main():
         'room_count',
         'non_angular',
         'max_floor',
+        'ceiling_height',
     ]
     self.visualizer.scatters(df)
     for field_name in scatter_field_names:

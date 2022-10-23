@@ -19,7 +19,7 @@ class Preprocessor:
     self.null_cell_drops_row_columns = [
         'max_floor',
         'floor',
-        'build_year',
+        # 'build_year',
         # 'lat',
         # 'long',
         'district',
@@ -38,7 +38,6 @@ class Preprocessor:
         'intersection',  # convert to longitude / latitude
         # 'district',
         'street',
-        'intersection',
         'house_number',
         'city',
         # 'address',
@@ -64,6 +63,7 @@ class Preprocessor:
     percent = (df.isnull().sum()/df.isnull().count()).sort_values(ascending=False)
     missing_data = pd.concat([total, percent], axis=1, keys=['Total', 'Percent'])
     exclude = self.null_cell_drops_row_columns + self.seed_columns + self.fill_category_columns
+    print(f"Excluded: {exclude} columns because\n")
     labels_to_drop = missing_data[~missing_data.index.isin(exclude)][missing_data['Total'] > 1].index
     df = df.drop(columns=labels_to_drop)
     print(f"Dropped: {labels_to_drop} columns because of nulls\n")
@@ -102,7 +102,6 @@ class Preprocessor:
     ceiling_height_lowerbound = 0.5
     df2 = df.drop(index=df.loc[df['ceiling_height'] >= ceiling_height_upperbound].index)
     df2 = df2.drop(index=df2.loc[df2['ceiling_height'] <= ceiling_height_lowerbound].index)
-    self.visualizer.scatter(df2, 'ceiling_height')
     print(f"df2: Dropped rows not in span: {ceiling_height_upperbound} <= ceiling_height <= {ceiling_height_lowerbound} m\n")
 
     # remove false scraped building type
