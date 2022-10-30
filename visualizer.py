@@ -6,6 +6,8 @@ import pandas as pd
 from my_types import dtypes
 from sklearn.preprocessing import StandardScaler
 import numpy as np
+from wordcloud import WordCloud
+from nltk.corpus import stopwords
 
 
 class Visualizer:
@@ -26,6 +28,17 @@ class Visualizer:
     plt.title(f'{param} distribution')
     res = probplot(df[param], plot=plt)
     plt.show()
+
+  # Kaisar
+  def word_cloud(self, df: DataFrame) -> None:
+    filtered_df = df[df['text'].notnull()]
+    text1 = " ".join(title for title in filtered_df.text)
+    russian_stopwords = stopwords.words("russian")
+    word_cloud1 = WordCloud(collocations=False, background_color='white',
+                            width=2048, height=1080, stopwords=russian_stopwords).generate(text1)
+
+    # saving the image
+    word_cloud1.to_file('word_cloud.png')
 
   def biv(self, df: DataFrame) -> None:
     # bivariate analysis saleprice/grlivarea

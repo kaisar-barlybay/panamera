@@ -43,9 +43,7 @@ class Main():
     print(f"Df shape after preprocessing is : {self.df.shape}")
 
   def grab_parallel(self, thread_count: int):
-    from multiprocessing import Pool
-    pool = Pool()
-    df_len = len(main.df.index)/100
+    df_len = len(self.df.index)/100
 
     results = []
     for i in range(thread_count):
@@ -53,11 +51,12 @@ class Main():
       to_i = (i+1) * int(df_len / thread_count) - 1
       subd = self.df.loc[from_i:to_i]
       print(f'send df of size={len(subd.index)}')
-      results.append(pool.apply_async(self.preprocessor.placeFind, [subd]))
-    dfs = []
-    for result in results:
-      dfs.append(result.get())
-    df = pd.concat(dfs)
+      results.append(self.preprocessor.placeFind(subd))
+    df = pd.concat(results)
+    df.to_csv('df_with_geo.csv')
+
+  def grab_linear(self):
+    df = self.preprocessor.placeFind(self.df.index)
     df.to_csv('df_with_geo.csv')
 
   def visualize(self) -> None:
@@ -106,11 +105,12 @@ class Main():
 
 if __name__ == '__main__':
   main = Main()
-  job = 'analyze'
+  job = 'find_place'
   match job:
     case 'find_place':
       main.load()
       main.grab_parallel(10)
+      main.grab_linear()
 
     case 'parse':
       # parse

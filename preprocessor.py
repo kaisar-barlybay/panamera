@@ -12,6 +12,14 @@ import pandas as pd
 from my_types import TLoc
 from visualizer import Visualizer
 
+a = None
+
+
+def f1():
+  global a
+  sleep(3)
+  a = 1
+
 
 class Preprocessor:
   def __init__(self, visualizer: Visualizer) -> None:
@@ -174,17 +182,26 @@ class Preprocessor:
     # print(city, ditrict, house_number, intersection, street,)
     res = ''.join(add)
     res = re.sub(r'(\, (мкр|Мкр|Мкрн))?', '', res)
-    return res
+    return translit(res, 'ru', reversed=True)
 
   def geoGrab(self, address: str) -> TLoc | None:
+    import time
+    from itertools import count
+    from multiprocessing import Process
     from geopy.geocoders import Nominatim  # type: ignore
+
+    p1 = Process(target=f1, name='Process_inc_forever')
+    p1.start()
+    p1.join(timeout=5)
+    p1.terminate()
+    print(a)
 
     print(f"{address=}")
     geolocator = Nominatim(user_agent='user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36')
     location = None
     while location is None:
       try:
-        location = geolocator.geocode(address)
+        location = geolocator.geocode(address, timeout=5)
       except (GeocoderUnavailable, GeocoderServiceError) as e:
         print('waiting')
         sleep(5)
