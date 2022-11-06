@@ -1,6 +1,8 @@
 from time import sleep
 from scipy.special import inv_boxcox1p
 from geopy.exc import GeocoderUnavailable, GeocoderServiceError
+from typing import Any
+import time
 import re
 from scipy.stats import skew
 from transliterate import translit
@@ -166,12 +168,18 @@ class Preprocessor:
       serie = inv_boxcox1p(serie, lam)
     return serie
 
-  def get_address(self, row: Series) -> str:
+  def get_address(self, row: Series) -> str | None:
     city = row['city']
     ditrict = row['district']
     house_number = row['house_number']
     intersection = row['intersection']
     street = row['street']
+
+    def isnan(val: Any) -> bool:
+      return val is None or pd.isnull(val) or val == ''
+
+    if isnan(city) or isnan(street):
+      return None
     add = [
         f"{city}",
         f", {ditrict} район" if type(ditrict) != float else '',
@@ -182,7 +190,27 @@ class Preprocessor:
     # print(city, ditrict, house_number, intersection, street,)
     res = ''.join(add)
     res = re.sub(r'(\, (мкр|Мкр|Мкрн))?', '', res)
-    return translit(res, 'ru', reversed=True)
+    # return translit(res, 'ru', reversed=True)
+    return res
+
+  def geoGrabGis(self, address: str) -> TLoc | None:
+    if address is None:
+      return None, None
+    url = "https://catalog.api.2gis.com/3.0/items/geocode"
+
+    payload = {}
+    headers = {}
+    params = {
+        'q': address,
+        'fields': 'items.point',
+        'key': 'demo'
+    }
+    time.sleep(0.25)
+
+    response = requests.request("GET", url, headers=headers, data=payload, params=params).json()
+
+    point = response['result']['items'][0]['point']
+    return point['lon'], point['lat']
 
   def geoGrab(self, address: str) -> TLoc | None:
     import time
