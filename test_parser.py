@@ -1,5 +1,6 @@
 from typing import Any, Generator, cast
 import numpy as np
+
 from parser import Parser
 from unittest import TestCase
 from test_data import test_cases, patterns
