@@ -6,7 +6,7 @@
 
 
 # Quick start
-In main.py file modify job literal, where it should be **find_place**, **parse**, **visualize** and run the script. 
+In main.py file modify job literal, where it should be **find_place**, **parse** or **visualize** and run the script. 
 
 1. It's more safe to parse in batches and then concatenate the dataframes into one, rather than catch some error in middle and loose all data. Therefore you need additionally provide page range if you are running **parse** job.
 
