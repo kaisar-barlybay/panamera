@@ -1,3 +1,10 @@
+# Panamera
+- Abdrakhym Arailym, 221107063
+- Barlybay Kaisar, 211107009
+- Sanatbek Olzhas, 211107032
+- Shynar Toktar, 221107064
+
+
 # Quick start
 In main.py file modify job literal, where it should be **find_place**, **parse**, **visualize** and run the script. 
 
