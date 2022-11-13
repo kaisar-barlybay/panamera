@@ -31,14 +31,14 @@ class Main():
   def load(self) -> None:
     self.df = pd.read_csv('krisha_1-502.csv')
 
-  def a(self) -> None:
+  def describe_before_preprocessing(self) -> None:
     print(f"Df shape before preprocessing is : {self.df.shape}")
     print(f"df columns: {list(self.df.columns)}")
 
     print(self.df.describe())
     print(self.df.columns)
 
-  def b(self) -> None:
+  def describe_after_preprocessing(self) -> None:
     print(f"\n\nFinal columns: {list(self.df.columns)}\n\n")
     print(f"Df shape after preprocessing is : {self.df.shape}")
 
@@ -131,8 +131,7 @@ if __name__ == '__main__':
             yield uri
 
         main.parser.parse(from_page, to_page, generator)
-    case 'analyze':
+    case 'visualize':
       main.visualize()
-      # main.analyze()
     case _:
       pass
