@@ -102,3 +102,4 @@ class Visualizer:
     plt.xlabel('Features', fontsize=15)
     plt.ylabel('Percent of missing values', fontsize=15)
     plt.title('Percent missing data by feature', fontsize=15)
+    plt.savefig('missing_values.png')

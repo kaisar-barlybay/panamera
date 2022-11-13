@@ -36,11 +36,11 @@ class Preprocessor:
         # 'ceiling_height',
     ]
     self.cols_to_translit = [
-        'residential_complex',
-        'condition',
-        'floor_type',
-        'door',
-        'building_type',
+        # 'residential_complex',
+        # 'condition',
+        # 'floor_type',
+        # 'door',
+        # 'building_type',
         'district',
     ]
     self.seed_columns = [
